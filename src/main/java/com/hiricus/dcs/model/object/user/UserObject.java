@@ -1,15 +1,15 @@
 package com.hiricus.dcs.model.object.user;
 
-import lombok.Setter;
-import lombok.ToString;
+import com.hiricus.dcs.security.data.RegisterRequest;
+import lombok.Data;
 import org.jooq.Record;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.hiricus.dcs.generated.public_.Tables.USERS;
 
-@Setter
-@ToString
+@Data
 public class UserObject {
     private int id;
     private String login;
@@ -19,6 +19,12 @@ public class UserObject {
 
     private UserDataObject userData;
 
+    private List<String> userRoles;
+
+    public UserObject(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
     public UserObject(int id, String login, String email, String password, LocalDateTime lastLoginTime) {
         this.id = id;
         this.login = login;
@@ -58,6 +64,9 @@ public class UserObject {
     }
     public UserDataObject getUserData() {
         return userData;
+    }
+    public List<String> getUserRoles() {
+        return userRoles;
     }
 
     // setter

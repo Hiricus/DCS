@@ -5,6 +5,7 @@ import com.hiricus.dcs.model.object.user.UserDataObject;
 import com.hiricus.dcs.model.repository.UserDataRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -47,10 +48,5 @@ public class TestControllerUserData {
     public ResponseEntity<?> deleteUserData(@RequestParam("id") Integer userId) {
         userDataRepository.deleteUserDataByUserId(userId);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/hello")
-    public String helloController() {
-        return "Hello!";
     }
 }

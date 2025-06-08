@@ -1,19 +1,15 @@
 package com.hiricus.dcs;
 
-import com.hiricus.dcs.model.object.discipline.DisciplineObject;
 import com.hiricus.dcs.model.object.discipline.FinalGradeObject;
-import com.hiricus.dcs.model.object.document.DocumentObject;
 import com.hiricus.dcs.model.object.group.GroupObject;
-import com.hiricus.dcs.model.object.task.TaskObject;
-import com.hiricus.dcs.model.object.task.TaskType;
-import com.hiricus.dcs.model.object.user.UserObject;
 import com.hiricus.dcs.model.repository.*;
+import com.hiricus.dcs.security.data.UserAuthRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 public class StartupRunner implements CommandLineRunner {
@@ -24,6 +20,9 @@ public class StartupRunner implements CommandLineRunner {
     GradeRepository gradeRepository;
     DocumentRepository documentRepository;
     TaskRepository taskRepository;
+
+    @Autowired
+    ApplicationContext context;
 
     public StartupRunner(RoleRepository roleRepository, GroupRepository groupRepository, DisciplineRepository disciplineRepository, UserRepository userRepository, GradeRepository gradeRepository, DocumentRepository documentRepository, TaskRepository taskRepository) {
         this.roleRepository = roleRepository;
@@ -44,6 +43,8 @@ public class StartupRunner implements CommandLineRunner {
 
         GroupObject groupObject = new GroupObject(4, "ПИ-212", 2, 2025);
 
+        System.out.println(context);
+        UserAuthRequest user = new UserAuthRequest("login", "CURATOR");
 
 //        List<UserObject> subjects = List.of(
 //                new UserObject(1, "", "", "", LocalDateTime.now()),

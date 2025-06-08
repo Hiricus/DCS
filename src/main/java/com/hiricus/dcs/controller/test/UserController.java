@@ -11,10 +11,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/test/user")
-public class TestControllerUser {
+public class UserController {
     private final UserRepository userRepository;
 
-    public TestControllerUser(UserRepository userRepository) {
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

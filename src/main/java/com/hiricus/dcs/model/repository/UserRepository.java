@@ -33,6 +33,13 @@ public class UserRepository {
                 .fetchOptional(UserObject::new);
     }
 
+    public Optional<UserObject> findUserByLogin(String login) {
+        return jooq.select(USERS.asterisk())
+                .from(USERS)
+                .where(USERS.LOGIN.eq(login))
+                .fetchOptional(UserObject::new);
+    }
+
     public List<UserObject> findAll() {
         return jooq.select(USERS.asterisk())
                 .from(USERS)
@@ -66,6 +73,10 @@ public class UserRepository {
 
     public boolean isUserExistsById(int id) {
         return findUserById(id).isPresent();
+    }
+
+    public boolean isUserExistsByLogin(String login) {
+        return findUserByLogin(login).isPresent();
     }
 
     // Work with groups

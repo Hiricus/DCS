@@ -18,6 +18,9 @@ public class FinalGradeObject {
     private int userId;
     private int disciplineId;
 
+    private String disciplineName;
+    private String userName;
+
     public FinalGradeObject() {}
     public FinalGradeObject(String grade, LocalDate attestationPeriod) {
         this.grade = grade;
@@ -57,5 +60,12 @@ public class FinalGradeObject {
     }
     public int getDisciplineId() {
         return disciplineId;
+    }
+
+    public String getDisciplineName() {
+        return disciplineName;
+    }
+    public String getUserName() {
+        return userName;
     }
 }

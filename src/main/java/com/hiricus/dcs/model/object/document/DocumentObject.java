@@ -2,7 +2,9 @@ package com.hiricus.dcs.model.object.document;
 
 import lombok.ToString;
 import org.jooq.Record;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static com.hiricus.dcs.generated.public_.Tables.DOCUMENTS;
@@ -17,6 +19,12 @@ public class DocumentObject {
     private byte[] data;
     private long sizeBytes;
 
+    public DocumentObject(MultipartFile file) throws IOException {
+        this.fileName = file.getName();
+        this.mimeType = file.getContentType();
+        this.sizeBytes = file.getSize();
+        this.data = file.getBytes();
+    }
     public DocumentObject(String fileName, String mimeType, byte[] data) {
         this.fileName = fileName;
         this.mimeType = mimeType;

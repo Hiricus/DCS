@@ -3,6 +3,7 @@ package com.hiricus.dcs.security;
 import com.hiricus.dcs.util.RoleContainer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -13,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
+@EnableMethodSecurity
 @Configuration
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
@@ -31,7 +33,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasAuthority(roleContainer.getRoleName(1))
+                        .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_USER")
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
@@ -43,3 +45,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+

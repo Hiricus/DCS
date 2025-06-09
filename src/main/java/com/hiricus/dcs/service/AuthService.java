@@ -7,8 +7,11 @@ import com.hiricus.dcs.model.object.user.UserObject;
 import com.hiricus.dcs.model.repository.RoleRepository;
 import com.hiricus.dcs.model.repository.UserRepository;
 import com.hiricus.dcs.security.JwtUtil;
-import com.hiricus.dcs.security.data.RegisterRequest;
-import com.hiricus.dcs.security.data.UserAuthRequest;
+import com.hiricus.dcs.security.request.UserRegisterRequest;
+import com.hiricus.dcs.security.request.UserAuthRequest;
+import com.hiricus.dcs.util.RoleContainer;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,31 +26,33 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final JwtUtil jwtUtil;
+    private final RoleContainer roleContainer;
 
     @Autowired
     public AuthService(UserRepository userRepository,
                        RoleRepository roleRepository,
                        PasswordEncoder encoder,
-                       JwtUtil jwtUtil) {
+                       JwtUtil jwtUtil,
+                       RoleContainer roleContainer) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtil = jwtUtil;
+        this.roleContainer = roleContainer;
     }
 
     @Transactional
-    public Optional<Integer> registerNewUser(RegisterRequest request) {
+    public Optional<Integer> registerNewUser(UserRegisterRequest request) {
         // Если пользователь с таким логином уже есть
         if (userRepository.isUserExistsByLogin(request.getLogin())) {
             throw new UserAlreadyExistsException("Username already taken");
         }
 
         String hashedPassword = encoder.encode(request.getPassword());
-        Optional<Integer> userId = userRepository.createUser(new UserObject(request.getLogin(), hashedPassword));
+        Optional<Integer> userId = userRepository.createUser(new UserObject(request.getLogin(), request.getEmail(), hashedPassword));
 
         // Добавляется дефолтная роль
-        // TODO: сделать поиск id роли по имени из БД
-        roleRepository.addRoleToUser(userId.get(), 1);
+        roleRepository.addRoleToUser(userId.get(), roleContainer.getRoleId("ROLE_USER"));
 
         return userId;
     }
@@ -70,9 +75,22 @@ public class AuthService {
             List<String> userRoles = roleRepository.getUsersRoles(userObject.get().getId())
                     .stream().map(RoleObject::getRoleName)
                     .toList();
-            return jwtUtil.generateToken(login, userRoles);
+            return jwtUtil.generateToken(userObject.get().getId(), login, userRoles);
         } else {
             throw new EntityNotFoundException("Invalid credentials");
+        }
+    }
+
+    @Transactional
+    public boolean verifyToken(String token) {
+        try {
+            Claims claims = jwtUtil.validateToken(token);
+            String login = claims.get("login", String.class);
+            return userRepository.isUserExistsByLogin(login);
+
+            // В случае если токен просрочен или невалиден
+        } catch (JwtException ex) {
+            return false;
         }
     }
 }

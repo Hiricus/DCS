@@ -1,11 +1,10 @@
 package com.hiricus.dcs.security;
 
-import com.hiricus.dcs.model.object.user.RoleObject;
-import com.hiricus.dcs.security.data.UserAuthRequest;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import javax.crypto.SecretKey;
@@ -16,13 +15,25 @@ import java.util.Map;
 
 @Configuration
 public class JwtUtil {
-    private final SecretKey secretKey = Keys.hmacShaKeyFor(JwtProperties.SECRET_KEY.getBytes());
+    private final JwtProperties jwtProperties;
+    private final SecretKey secretKey;
 
-    public String generateToken(String login, List<String> userRoles) {
+    @Autowired
+    public JwtUtil(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+        secretKey = Keys.hmacShaKeyFor(jwtProperties.SECRET_KEY.getBytes());
+    }
+
+    public String generateToken(Integer id, String login, List<String> userRoles) {
+//        System.out.println("Id from generate token: " + id);
         return Jwts.builder()
-                .setClaims(Map.of("login", login, "roles", userRoles))
+                .setClaims(Map.of(
+                        "id", id,
+                        "login", login,
+                        "roles", userRoles
+                ))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.EXPIRATION_TIME))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }

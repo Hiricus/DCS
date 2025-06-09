@@ -1,5 +1,7 @@
 package com.hiricus.dcs.model.object.group;
 
+import com.hiricus.dcs.dto.request.GroupCreationRequest;
+import com.hiricus.dcs.model.object.user.UserDataObject;
 import com.hiricus.dcs.model.object.user.UserObject;
 import lombok.ToString;
 import org.jooq.Record;
@@ -19,9 +21,16 @@ public class GroupObject {
     private UserObject curator;
     private UserObject head;
 
-    private List<UserObject> members = new ArrayList<>();
+    private List<UserDataObject> members = new ArrayList<>();
 
     // constructors
+    public GroupObject(GroupCreationRequest request) {
+        this.name = request.getName();
+        this.course = request.getCourse();
+        this.year = request.getEntranceYear();
+        this.curator = new UserObject(request.getCuratorId());
+        this.head = new UserObject(request.getHeadId());
+    }
     public GroupObject(int id, String name, int course, int year) {
         this.id = id;
         this.name = name;
@@ -56,7 +65,7 @@ public class GroupObject {
     public UserObject getHead() {
         return head;
     }
-    public List<UserObject> getMembers() {
+    public List<UserDataObject> getMembers() {
         return members;
     }
 
@@ -79,7 +88,7 @@ public class GroupObject {
     public void setHead(UserObject head) {
         this.head = head;
     }
-    public void setMembers(List<UserObject> members) {
+    public void setMembers(List<UserDataObject> members) {
         this.members = members;
     }
 }

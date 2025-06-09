@@ -1,6 +1,5 @@
 package com.hiricus.dcs.model.object.user;
 
-import com.hiricus.dcs.security.data.RegisterRequest;
 import lombok.Data;
 import org.jooq.Record;
 
@@ -21,8 +20,9 @@ public class UserObject {
 
     private List<String> userRoles;
 
-    public UserObject(String login, String password) {
+    public UserObject(String login, String email, String password) {
         this.login = login;
+        this.email = email;
         this.password = password;
     }
     public UserObject(int id, String login, String email, String password, LocalDateTime lastLoginTime) {
@@ -35,6 +35,9 @@ public class UserObject {
     public UserObject(int id, String login, String email, String password, LocalDateTime lastLoginTime, UserDataObject userData) {
         this(id, login, email, password, lastLoginTime);
         this.userData = userData;
+    }
+    public UserObject(int id) {
+        this.id = id;
     }
     public UserObject() {}
 

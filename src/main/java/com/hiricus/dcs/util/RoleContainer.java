@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class RoleContainer {
     private final RoleRepository roleRepository;
 
-    private Map<Integer, String> roleMap;
+    private Map<String, Integer> roleMap;
 
     @Autowired
     public RoleContainer(RoleRepository roleRepository) {
@@ -24,16 +24,16 @@ public class RoleContainer {
         roleMap = new HashMap<>();
     }
 
-
+    // Собирает все роли из БД при запуске приложения
     @PostConstruct
     public void setup() {
         List<RoleObject> roleObjects = roleRepository.findAll();
         roleMap = roleObjects.stream().collect(
-                Collectors.toMap(RoleObject::getId, RoleObject::getRoleName)
+                Collectors.toMap(RoleObject::getRoleName, RoleObject::getId)
         );
     }
 
-    public String getRoleName(Integer id) {
-        return roleMap.get(id);
+    public Integer getRoleId(String roleName) {
+        return roleMap.get(roleName);
     }
 }

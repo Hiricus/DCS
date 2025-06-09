@@ -1,6 +1,7 @@
 package com.hiricus.dcs.model.repository;
 
 import com.hiricus.dcs.model.object.group.GroupObject;
+import com.hiricus.dcs.model.object.user.UserDataObject;
 import com.hiricus.dcs.model.object.user.UserObject;
 import org.jooq.DSLContext;
 import org.jooq.InsertSetMoreStep;
@@ -12,9 +13,7 @@ import java.util.Optional;
 
 import com.hiricus.dcs.generated.public_.tables.records.UserGroupRelationRecord;
 
-import static com.hiricus.dcs.generated.public_.Tables.USERS;
-import static com.hiricus.dcs.generated.public_.Tables.STUDENT_GROUP;
-import static com.hiricus.dcs.generated.public_.Tables.USER_GROUP_RELATION;
+import static com.hiricus.dcs.generated.public_.Tables.*;
 
 @Repository
 public class GroupRepository {
@@ -32,10 +31,30 @@ public class GroupRepository {
                 .fetchOptional(GroupObject::new);
     }
 
+    public Optional<GroupObject> findGroupByName(String name) {
+        return jooq.select(STUDENT_GROUP.asterisk())
+                .from(STUDENT_GROUP)
+                .where(STUDENT_GROUP.GROUP_NAME.eq(name))
+                .fetchOptional(GroupObject::new);
+    }
+
     public List<GroupObject> findAll() {
         return jooq.select(STUDENT_GROUP.asterisk())
                 .from(STUDENT_GROUP)
                 .fetch(GroupObject::new);
+    }
+
+    public List<Integer> findAllGroupIds() {
+        return jooq.select(STUDENT_GROUP.ID)
+                .from(STUDENT_GROUP)
+                .fetch(record -> record.get(STUDENT_GROUP.ID));
+    }
+
+    public List<Integer> findCuratedGroupIds(int curatorId) {
+        return jooq.select(STUDENT_GROUP.ID)
+                .from(STUDENT_GROUP)
+                .where(STUDENT_GROUP.CURATOR_ID.eq(curatorId))
+                .fetch(record -> record.get(STUDENT_GROUP.ID));
     }
 
     // Объекты куратора и старосты должны содержать id пользователя
@@ -69,8 +88,26 @@ public class GroupRepository {
     public boolean isGroupExistsById(int id) {
         return findGroupById(id).isPresent();
     }
+    public boolean isGroupExistsByName(String name) {
+        return findGroupByName(name).isPresent();
+    }
 
     // More detailed work with staff
+    public Optional<UserObject> findCurator(int groupId) {
+        return jooq.select(USERS.asterisk())
+                .from(STUDENT_GROUP)
+                .join(USERS).on(STUDENT_GROUP.CURATOR_ID.eq(USERS.ID))
+                .where(STUDENT_GROUP.ID.eq(groupId))
+                .fetchOptional(UserObject::new);
+    }
+    public Optional<UserObject> findHead(int groupId) {
+        return jooq.select(USERS.asterisk())
+                .from(STUDENT_GROUP)
+                .join(USERS).on(STUDENT_GROUP.HEAD_ID.eq(USERS.ID))
+                .where(STUDENT_GROUP.ID.eq(groupId))
+                .fetchOptional(UserObject::new);
+    }
+
     public int setCurator(int groupId, int curatorId) {
         return jooq.update(STUDENT_GROUP)
                 .set(STUDENT_GROUP.CURATOR_ID, curatorId)
@@ -97,6 +134,15 @@ public class GroupRepository {
                 .execute();
     }
 
+    public Optional<Integer> findGroupIdIfHead(int userId) {
+        return jooq.select(STUDENT_GROUP.ID)
+                .from(STUDENT_GROUP)
+                .where(STUDENT_GROUP.HEAD_ID.eq(userId))
+                .fetchOptional(
+                        record -> record.get(STUDENT_GROUP.ID)
+                );
+    }
+
     // Work with group members
     public List<UserObject> getGroupMembers(int groupId) {
         return jooq.select(USERS.asterisk()).from(STUDENT_GROUP)
@@ -105,6 +151,15 @@ public class GroupRepository {
                 .where(STUDENT_GROUP.ID.eq(groupId))
                 .fetch(UserObject::new);
     }
+
+    public List<UserDataObject> getGroupMembersInfo(int groupId) {
+        return jooq.select(USER_DATA.asterisk()).from(STUDENT_GROUP)
+                .leftJoin(USER_GROUP_RELATION).on(STUDENT_GROUP.ID.eq(USER_GROUP_RELATION.GROUP_ID))
+                .leftJoin(USER_DATA).on(USER_GROUP_RELATION.USER_ID.eq(USER_DATA.USER_ID))
+                .where(STUDENT_GROUP.ID.eq(groupId))
+                .fetch(UserDataObject::new);
+    }
+
     public int addGroupMembers(int groupId, List<UserObject> members) {
         List<InsertSetMoreStep<UserGroupRelationRecord>> queries = members.stream()
                 .map(member -> {
@@ -115,6 +170,15 @@ public class GroupRepository {
                 .toList();
         return jooq.batch(queries).execute().length;
     }
+
+    // TODO: Сделать чтобы удаляло только если пользователь в группе с переданным id
+    // Пока работает только если у каждого студента одна группа
+    public int removeGroupMembers(int groupId, List<Integer> memberIds) {
+        return jooq.deleteFrom(USER_GROUP_RELATION)
+                .where(USER_GROUP_RELATION.USER_ID.in(memberIds))
+                .execute();
+    }
+
     public int clearGroup(int groupId) {
         return jooq.delete(USER_GROUP_RELATION)
                 .where(USER_GROUP_RELATION.GROUP_ID.eq(groupId))

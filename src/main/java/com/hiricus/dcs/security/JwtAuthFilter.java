@@ -1,12 +1,15 @@
 package com.hiricus.dcs.security;
 
+import com.hiricus.dcs.security.data.CustomUserDetails;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -29,19 +32,34 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             try {
                 Claims claims = jwtUtil.validateToken(token);
+                Integer userId = claims.get("id", Integer.class);
                 String login = claims.get("login", String.class);
                 List<String> roles = claims.get("roles", List.class);
-                System.out.println("Parsed roles: " + roles);
+                List<SimpleGrantedAuthority> authorities = roles.stream().map(SimpleGrantedAuthority::new).toList();
 
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                CustomUserDetails userDetails = new CustomUserDetails(
+                        userId,
                         login,
                         null,
-                        roles.stream().map(SimpleGrantedAuthority::new).toList()
+                        authorities
                 );
 
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        authorities
+                );
                 SecurityContextHolder.getContext().setAuthentication(auth);
+
+                // Если токен просрочен
+            } catch (ExpiredJwtException ex) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token expired");
+                return;
+                // Если токен невалиден
             } catch (JwtException ex) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid token");
                 return;
             }
         }

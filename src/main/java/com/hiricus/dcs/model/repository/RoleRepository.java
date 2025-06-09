@@ -81,6 +81,17 @@ public class RoleRepository {
                 .where(USERS.ID.eq(userId))
                 .fetch(this::mapToRoleObject);
     }
+    public boolean userHasRole(int userId, String role) {
+        List<String> roleNames = getUsersRoles(userId).stream()
+                .map(RoleObject::getRoleName)
+                .toList();
+        return roleNames.contains(role);
+    }
+    public int removeAllRolesFromUser(int userId) {
+        return jooq.delete(USER_ROLE_RELATION)
+                .where(USER_ROLE_RELATION.USER_ID.eq(userId))
+                .execute();
+    }
     public int addRoleToUser(int userId, int roleId) {
         return jooq.insertInto(USER_ROLE_RELATION)
                 .set(USER_ROLE_RELATION.USER_ID, userId)

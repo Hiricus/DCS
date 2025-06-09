@@ -3,7 +3,7 @@ package com.hiricus.dcs;
 import com.hiricus.dcs.model.object.discipline.FinalGradeObject;
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.model.repository.*;
-import com.hiricus.dcs.security.data.UserAuthRequest;
+import com.hiricus.dcs.security.request.UserAuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
@@ -44,7 +44,9 @@ public class StartupRunner implements CommandLineRunner {
         GroupObject groupObject = new GroupObject(4, "ПИ-212", 2, 2025);
 
         System.out.println(context);
-        UserAuthRequest user = new UserAuthRequest("login", "CURATOR");
+
+//        GroupObject group = groupRepository.findGroupByName("ПИ-212").get();
+//        System.out.println("Group: " + group);
 
 //        List<UserObject> subjects = List.of(
 //                new UserObject(1, "", "", "", LocalDateTime.now()),

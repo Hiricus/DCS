@@ -1,15 +1,15 @@
-package com.hiricus.dcs.security.data;
+package com.hiricus.dcs.security.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+@Getter
+@Setter
+public class UserAuthRequest {
     private String login;
     private String password;
 }

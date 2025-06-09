@@ -68,6 +68,9 @@ public class DisciplineRepository {
     public boolean isExistsById(int id) {
         return findDisciplineById(id).isPresent();
     }
+    public boolean isExistsByName(String name) {
+        return findDisciplineByName(name).isPresent();
+    }
 
     // Work with users
     public List<UserObject> getAddedUsers(int id) {

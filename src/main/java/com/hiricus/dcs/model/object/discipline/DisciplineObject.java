@@ -6,6 +6,7 @@ import org.jooq.Record;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.hiricus.dcs.generated.public_.Tables.DISCIPLINE;
 
@@ -29,6 +30,18 @@ public class DisciplineObject {
     public DisciplineObject(Record record) {
         this.id = record.get(DISCIPLINE.ID);
         this.name = record.get(DISCIPLINE.NAME);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DisciplineObject that = (DisciplineObject) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 
     // getters

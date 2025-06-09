@@ -89,10 +89,10 @@ public class UserRepository {
     }
 
     // Work with disciplines
-    public List<DisciplineObject> getUsersDisciplines(UserObject user) {
+    public List<DisciplineObject> getUsersDisciplines(Integer userId) {
         return jooq.select(DISCIPLINE.asterisk()).from(USER_DISCIPLINE_RELATION)
                 .leftJoin(DISCIPLINE).on(USER_DISCIPLINE_RELATION.DISCIPLINE_ID.eq(DISCIPLINE.ID))
-                .where(USER_DISCIPLINE_RELATION.USER_ID.eq(user.getId()))
+                .where(USER_DISCIPLINE_RELATION.USER_ID.eq(userId))
                 .fetch(DisciplineObject::new);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Component
 public class StartupRunner implements CommandLineRunner {
@@ -41,7 +42,8 @@ public class StartupRunner implements CommandLineRunner {
         FinalGradeObject tri = new FinalGradeObject("Толково", LocalDate.now(), 1, 3);
         FinalGradeObject norm = new FinalGradeObject("Пофиг", LocalDate.now(), 4, 0);
 
-        GroupObject groupObject = new GroupObject(4, "ПИ-212", 2, 2025);
+        List<GroupObject> groups = groupRepository.findAll();
+        System.out.println("groups: " + groups);
 
         System.out.println(context);
 

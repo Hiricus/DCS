@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+
+    <changeSet id="v1-1" author="Hiricus">
+        <sqlFile path="v1/sql/01_create_users_and_roles.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="v1-2" author="Hiricus">
+        <sqlFile path="v1/sql/02_create_groups.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="v1-3" author="Hiricus">
+        <sqlFile path="v1/sql/03_create_disciplines.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="v1-4" author="Hiricus">
+        <sqlFile path="v1/sql/04_create_grades_and_documents.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="v1-5" author="Hiricus">
+        <sqlFile path="v1/sql/05_create_task_structure.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="v1-6" author="Hiricus">
+        <sqlFile path="v1/sql/06_alter_tables.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+</databaseChangeLog>

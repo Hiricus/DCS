@@ -1,9 +1,12 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/dcs
+    url: jdbc:postgresql://localhost:5432/dcs_liquibase
     username: postgres
     password: 123
+  liquibase:
+    enabled: false
+
 
 jwt:
   secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf

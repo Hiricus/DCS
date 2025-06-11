@@ -1,5 +1,6 @@
 package com.hiricus.dcs.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hiricus.dcs.model.object.user.UserDataObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,11 @@ public class UserDataDto {
     private String name;
     private String surname;
     private String patronymic;
+
+    @JsonProperty("birth_date")
     private LocalDateTime birthDate;
+
+    @JsonProperty("phone_number")
     private String phoneNumber;
     private String passport;
     private String snils;

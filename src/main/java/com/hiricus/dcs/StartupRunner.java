@@ -1,5 +1,6 @@
 package com.hiricus.dcs;
 
+import com.hiricus.dcs.model.object.discipline.DisciplineObject;
 import com.hiricus.dcs.model.object.discipline.FinalGradeObject;
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.model.repository.*;
@@ -42,10 +43,9 @@ public class StartupRunner implements CommandLineRunner {
         FinalGradeObject tri = new FinalGradeObject("Толково", LocalDate.now(), 1, 3);
         FinalGradeObject norm = new FinalGradeObject("Пофиг", LocalDate.now(), 4, 0);
 
-        List<GroupObject> groups = groupRepository.findAll();
-        System.out.println("groups: " + groups);
 
-        System.out.println(context);
+        List<DisciplineObject> disciplines = disciplineRepository.findAll();
+        System.out.println("Disciplines: " + disciplines);
 
 //        GroupObject group = groupRepository.findGroupByName("ПИ-212").get();
 //        System.out.println("Group: " + group);

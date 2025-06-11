@@ -19,3 +19,57 @@ jobs:
         source: "."
         target: ${{ secrets.REMOTE_PATH }}
         rm: true
+
+    - name: Stop app if already running
+      continue-on-error: true
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          /usr/bin/pkill -f 'java -jar' || true
+
+    - name: Drop existing schema
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ${{ secrets.REMOTE_PATH }}
+          echo "Dropping existing schema..."
+          mvn liquibase:dropAll -Dspring.profiles.active=dev
+
+    - name: Apply migrations
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ${{ secrets.REMOTE_PATH }}
+          echo "Applying migrations..."
+          mvn liquibase:update -Dspring.profiles.active=dev
+          
+    - name: Build project
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ${{ secrets.REMOTE_PATH }}
+          echo "Building project..."
+          mvn clean package -DskipTests -Dspring.profiles.active=dev
+
+    - name: Start project
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd ${{ secrets.REMOTE_PATH }}
+          echo "Starting project..."
+          nohup java -jar target/*.jar --spring.profiles.active=dev > app.log 2>&1 &

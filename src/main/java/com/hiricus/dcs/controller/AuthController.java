@@ -3,6 +3,7 @@ package com.hiricus.dcs.controller;
 import com.hiricus.dcs.security.request.UserRegisterRequest;
 import com.hiricus.dcs.security.request.UserAuthRequest;
 import com.hiricus.dcs.service.AuthService;
+import com.hiricus.dcs.util.StandardResponseContainer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,14 +13,17 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final StandardResponseContainer responseContainer;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService,
+                          StandardResponseContainer responseContainer) {
         this.authService = authService;
+        this.responseContainer = responseContainer;
     }
 
     @GetMapping("/test")
     public ResponseEntity login() {
-        return new ResponseEntity("Hello", HttpStatus.OK);
+        return new ResponseEntity(responseContainer.getResponse(), HttpStatus.OK);
     }
 
     @GetMapping("/verify_token/{token}")

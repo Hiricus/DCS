@@ -14,7 +14,7 @@ import java.util.Objects;
 public class SecureController {
 
     @GetMapping("info")
-    @PreAuthorize("hasRole('USER')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public String getSecureInfo(Authentication authentication) {
         System.out.println("Roles: " + authentication.getAuthorities().stream().map(Objects::toString).toList());
         System.out.println("UserId: " + ((CustomUserDetails) authentication.getPrincipal()).getId());

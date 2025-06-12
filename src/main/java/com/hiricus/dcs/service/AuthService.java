@@ -58,6 +58,22 @@ public class AuthService {
     }
 
     @Transactional
+    public Optional<Integer> addAdminUser(String login, String password) {
+        // Если пользователь с таким логином уже есть
+        if (userRepository.isUserExistsByLogin(login)) {
+            throw new UserAlreadyExistsException("Username already taken");
+        }
+
+        String hashedPassword = encoder.encode(password);
+        Optional<Integer> userId = userRepository.createUser(new UserObject(login, "", hashedPassword));
+
+        // Добавляется роль админа
+        roleRepository.addRoleToUser(userId.get(), roleContainer.getRoleId("ROLE_ADMIN"));
+
+        return userId;
+    }
+
+    @Transactional
     public String loginAndGetToken(UserAuthRequest request) {
         String login = request.getLogin();
         Optional<UserObject> userObject = userRepository.findUserByLogin(login);

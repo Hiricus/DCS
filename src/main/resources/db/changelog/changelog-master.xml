@@ -24,4 +24,10 @@
     <changeSet id="v1-6" author="Hiricus">
         <sqlFile path="v1/sql/06_alter_tables.sql" relativeToChangelogFile="true"/>
     </changeSet>
+    <changeSet id="v1-7" author="Hiricus">
+        <sqlFile path="v1/sql/07_add_essential_data.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+<!--    <changeSet id="v1-8" author="Hiricus">-->
+<!--        <sqlFile path="v1/sql/08_assign_roles.sql" splitStatements="false" relativeToChangelogFile="true"/>-->
+<!--    </changeSet>-->
 </databaseChangeLog>

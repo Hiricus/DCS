@@ -1,8 +1,7 @@
-package com.hiricus.dcs.controller;
+package com.hiricus.dcs.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hiricus.dcs.model.object.document.DocumentObject;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,5 +24,11 @@ public class DocumentDto {
         this.name = document.getFileName();
         this.sizeBytes = document.getSizeBytes();
         this.contendBase64 = Base64.getEncoder().encodeToString(document.getData());
+    }
+
+    public DocumentDto(String name, Long sizeBytes, byte[] data) {
+        this.name = name;
+        this.sizeBytes = sizeBytes;
+        this.contendBase64 = Base64.getEncoder().encodeToString(data);
     }
 }

@@ -35,7 +35,7 @@ public class DocumentTemplateRepository {
     public Optional<Integer> createTemplate(DocumentTemplateObject template) {
         return jooq.insertInto(DOCUMENT_TEMPLATE)
                 .set(DOCUMENT_TEMPLATE.TEMPLATE_TYPE, template.getTemplateType().name())
-                .set(DOCUMENT_TEMPLATE.TEMPLATE_TEXT, template.getTemplateText())
+                .set(DOCUMENT_TEMPLATE.TEMPLATE_DATA, template.getTemplateData())
                 .set(DOCUMENT_TEMPLATE.MAPPINGS, template.getMappings().toString())
                 .returningResult(DOCUMENT_TEMPLATE.ID)
                 .fetchOptional(DOCUMENT_TEMPLATE.ID);
@@ -44,7 +44,7 @@ public class DocumentTemplateRepository {
     public int updateTemplate(DocumentTemplateObject template) {
         return jooq.update(DOCUMENT_TEMPLATE)
                 .set(DOCUMENT_TEMPLATE.TEMPLATE_TYPE, template.getTemplateType().name())
-                .set(DOCUMENT_TEMPLATE.TEMPLATE_TEXT, template.getTemplateText())
+                .set(DOCUMENT_TEMPLATE.TEMPLATE_DATA, template.getTemplateData())
                 .set(DOCUMENT_TEMPLATE.MAPPINGS, template.getMappings().toString())
                 .where(DOCUMENT_TEMPLATE.ID.eq(template.getId()))
                 .execute();

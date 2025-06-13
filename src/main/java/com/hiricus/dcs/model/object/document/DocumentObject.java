@@ -1,6 +1,7 @@
 package com.hiricus.dcs.model.object.document;
 
 import lombok.ToString;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.jooq.Record;
 import org.springframework.web.multipart.MultipartFile;
 

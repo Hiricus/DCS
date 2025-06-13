@@ -27,6 +27,6 @@ CREATE TABLE IF NOT EXISTS document_template
 (
     id            SERIAL PRIMARY KEY,
     template_type VARCHAR(50) UNIQUE,
-    template_text TEXT NOT NULL,
+    template_data bytea NOT NULL,
     mappings      TEXT NOT NULL
 );

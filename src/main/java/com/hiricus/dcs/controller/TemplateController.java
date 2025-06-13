@@ -1,14 +1,21 @@
-package com.hiricus.dcs.service;
+package com.hiricus.dcs.controller;
 
+import com.hiricus.dcs.dto.DocumentDto;
 import com.hiricus.dcs.dto.TemplateDto;
 import com.hiricus.dcs.dto.request.DocumentGenerationRequest;
 import com.hiricus.dcs.model.object.document.template.DocumentTemplateObject;
+import com.hiricus.dcs.model.object.document.template.TemplateType;
+import com.hiricus.dcs.service.template.TemplateService;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +42,10 @@ public class TemplateController {
     }
 
     @GetMapping("/generate")
-    public ResponseEntity<?> generateDocumentFromTemplate(DocumentGenerationRequest request) {
+    public ResponseEntity<DocumentDto> generateDocumentFromTemplate(@RequestBody DocumentGenerationRequest request) {
+        DocumentDto response  = templateService.getFilledTemplate(TemplateType.valueOf(request.getType()), request.getUserId());
 
-        // TODO: сделать логику генерации документов
-        return new ResponseEntity<>("Пока логики генерации нет", HttpStatus.OK);
+        // TODO: Сделать логику формирования ответа
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

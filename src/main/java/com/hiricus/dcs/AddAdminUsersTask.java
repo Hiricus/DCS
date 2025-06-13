@@ -23,6 +23,7 @@ public class AddAdminUsersTask implements CommandLineRunner {
         if (!userRepository.isUserExistsByLogin("Hiricus")) {
             log.info("Adding system users...");
             authService.addAdminUser("Hiricus", "2556145");
+            authService.addAdminUser("admin", "admin");
         }
     }
 }

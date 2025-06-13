@@ -1,5 +1,6 @@
 package com.hiricus.dcs.controller;
 
+import com.hiricus.dcs.dto.DocumentDto;
 import com.hiricus.dcs.model.object.document.DocumentObject;
 import com.hiricus.dcs.service.DocumentService;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class DocumentController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Long> createFile(@RequestBody MultipartFile file) {
         DocumentObject document;
         try {
             document = new DocumentObject(file);

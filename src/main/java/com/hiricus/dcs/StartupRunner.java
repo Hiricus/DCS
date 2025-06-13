@@ -1,7 +1,11 @@
 package com.hiricus.dcs;
 
+import com.hiricus.dcs.controller.TemplateController;
+import com.hiricus.dcs.dto.request.DocumentGenerationRequest;
 import com.hiricus.dcs.model.object.discipline.DisciplineObject;
 import com.hiricus.dcs.model.object.discipline.FinalGradeObject;
+import com.hiricus.dcs.model.object.document.DocumentObject;
+import com.hiricus.dcs.model.object.document.template.TemplateType;
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.model.repository.*;
 import com.hiricus.dcs.security.request.UserAuthRequest;
@@ -22,11 +26,12 @@ public class StartupRunner implements CommandLineRunner {
     GradeRepository gradeRepository;
     DocumentRepository documentRepository;
     TaskRepository taskRepository;
+    TemplateController templateController;
 
     @Autowired
     ApplicationContext context;
 
-    public StartupRunner(RoleRepository roleRepository, GroupRepository groupRepository, DisciplineRepository disciplineRepository, UserRepository userRepository, GradeRepository gradeRepository, DocumentRepository documentRepository, TaskRepository taskRepository) {
+    public StartupRunner(RoleRepository roleRepository, GroupRepository groupRepository, DisciplineRepository disciplineRepository, UserRepository userRepository, GradeRepository gradeRepository, DocumentRepository documentRepository, TaskRepository taskRepository, TemplateController templateController, ApplicationContext context) {
         this.roleRepository = roleRepository;
         this.groupRepository = groupRepository;
         this.disciplineRepository = disciplineRepository;
@@ -34,6 +39,8 @@ public class StartupRunner implements CommandLineRunner {
         this.gradeRepository = gradeRepository;
         this.documentRepository = documentRepository;
         this.taskRepository = taskRepository;
+        this.templateController = templateController;
+        this.context = context;
     }
 
     @Override
@@ -43,9 +50,11 @@ public class StartupRunner implements CommandLineRunner {
         FinalGradeObject tri = new FinalGradeObject("Толково", LocalDate.now(), 1, 3);
         FinalGradeObject norm = new FinalGradeObject("Пофиг", LocalDate.now(), 4, 0);
 
+//        templateController.generateDocumentFromTemplate(new DocumentGenerationRequest(TemplateType.RHAPSODY.name(), 1, "pdf"));
 
-        List<DisciplineObject> disciplines = disciplineRepository.findAll();
-        System.out.println("Disciplines: " + disciplines);
+
+//        DocumentObject doc = documentRepository.findDocumentById(1L).get();
+//        System.out.println("Mime type: " + doc.getMimeType());
 
 //        GroupObject group = groupRepository.findGroupByName("ПИ-212").get();
 //        System.out.println("Group: " + group);

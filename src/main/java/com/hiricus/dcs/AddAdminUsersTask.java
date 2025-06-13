@@ -71,7 +71,7 @@ public class AddAdminUsersTask implements CommandLineRunner {
         UserDataObject data3 = new UserDataObject(headId1, "Давид", "Пугач", "Сергеевич", LocalDateTime.now(), "+79781234432", "123456 7890", "idk lol");
         UserDataObject data4 = new UserDataObject("Даниил", "Погонялов", "Дмитриевич", LocalDateTime.now(), "+79788667056", "123456 7890", "idk lol");
         UserDataObject data5 = new UserDataObject("Андрей", "Саенко", "Алексеевич", LocalDateTime.now(), "+79787271488", "123456 7890", "idk lol");
-        UserDataObject data6 = new UserDataObject("Баhleдун", "V", "Мужеложец", LocalDateTime.now(), "+88005553535", "123456 1337", "idk lol");
+        UserDataObject data6 = new UserDataObject(headId2, "Баhleдун", "V", "Мужеложец", LocalDateTime.now(), "+88005553535", "123456 1337", "idk lol");
 
         Integer userId1 = userService.createUserData(data1);
         Integer userId2 = userService.createUserData(data2);

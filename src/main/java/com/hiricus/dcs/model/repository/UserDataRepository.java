@@ -46,6 +46,7 @@ public class UserDataRepository {
                 .fetch(this::mapToUserDataObject);
     }
 
+    // TODO: сделать добавление пустой записи с id в USERS
     public Optional<Integer> createUserData(UserDataObject userData) {
         return jooq.insertInto(USER_DATA)
                 .set(USER_DATA.USER_ID, userData.getId())

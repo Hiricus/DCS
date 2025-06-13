@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS users
 (
     id              SERIAL PRIMARY KEY,
-    login           VARCHAR(50) NOT NULL,
+    login           VARCHAR(50),
     email           VARCHAR(255),
-    password        TEXT        NOT NULL,
+    password        TEXT,
     last_login_time TIMESTAMP
 );
 

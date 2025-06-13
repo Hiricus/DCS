@@ -9,10 +9,7 @@ import com.hiricus.dcs.service.template.TemplateService;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,8 +38,10 @@ public class TemplateController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/generate")
+    @PostMapping("/generate")
     public ResponseEntity<DocumentDto> generateDocumentFromTemplate(@RequestBody DocumentGenerationRequest request) {
+
+        System.out.println("Request: " + request);
         DocumentDto response  = templateService.getFilledTemplate(TemplateType.valueOf(request.getType()), request.getUserId());
 
         // TODO: Сделать логику формирования ответа

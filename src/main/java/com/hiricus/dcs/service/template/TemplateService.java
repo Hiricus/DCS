@@ -57,7 +57,7 @@ public class TemplateService {
 //            }
 
 
-            return new DocumentDto("FilledTemplate", 1L, templateData);
+            return new DocumentDto("FilledTemplate.docx", 1L, templateData);
         } catch (IOException e) {
             throw new RuntimeException("Какая то фигня с заполнением темплейта в сервисном классе");
         }

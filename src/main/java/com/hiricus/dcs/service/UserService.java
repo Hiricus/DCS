@@ -29,6 +29,18 @@ public class UserService {
     }
 
     @Transactional
+    public Integer createUserData(UserDataObject userData) {
+        // ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН ИЛИ НЕ ПЕРЕДАН ID СОЗДАЁТСЯ НОВЫЙ АККАУНТ-СТАБ
+        if (userData.getId() == null || !(userRepository.isUserExistsById(userData.getId()))) {
+            UserObject stubUser = new UserObject("stub email", "stub password");
+            int userId = userRepository.createUser(stubUser).get();
+            userData.setId(userId);
+        }
+
+        return userDataRepository.createUserData(userData).get();
+    }
+
+    @Transactional
     public UserObject getUser(String login) {
         Optional<UserObject> user = userRepository.findUserByLogin(login);
 

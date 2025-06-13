@@ -70,7 +70,7 @@ public class RoleService {
 
     private void clearRolesAndSetNew(Integer userId, String role) {
         roleRepository.removeAllRolesFromUser(userId);
-        Integer curatorRoleId = roleContainer.getRoleId("role");
+        Integer curatorRoleId = roleContainer.getRoleId(role);
         roleRepository.addRoleToUser(userId, curatorRoleId);
     }
 }

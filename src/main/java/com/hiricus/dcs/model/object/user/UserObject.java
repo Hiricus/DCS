@@ -20,6 +20,10 @@ public class UserObject {
 
     private List<String> userRoles;
 
+    public UserObject(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
     public UserObject(String login, String email, String password) {
         this.login = login;
         this.email = email;

@@ -10,7 +10,7 @@ import static com.hiricus.dcs.generated.public_.Tables.USER_DATA;
 
 @ToString
 public class UserDataObject {
-    private int id;
+    private Integer id;
     private String name;
     private String surname;
     private String patronymic;
@@ -64,7 +64,7 @@ public class UserDataObject {
     public UserDataObject() {}
 
     // getters
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
     public String getName() {

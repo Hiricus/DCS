@@ -37,6 +37,11 @@ public class GroupObject {
         this.course = course;
         this.year = year;
     }
+    public GroupObject(String name, int course, int year) {
+        this.name = name;
+        this.course = course;
+        this.year = year;
+    }
     public GroupObject() {}
 
     public GroupObject(Record record) {

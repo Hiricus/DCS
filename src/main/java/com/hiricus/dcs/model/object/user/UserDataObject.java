@@ -58,6 +58,9 @@ public class UserDataObject {
         this.passport = passport;
         this.snils = snils;
     }
+    public UserDataObject(int id) {
+        this.id = id;
+    }
     public UserDataObject() {}
 
     // getters

@@ -2,11 +2,14 @@ package com.hiricus.dcs;
 
 import com.hiricus.dcs.controller.TemplateController;
 import com.hiricus.dcs.dto.request.DocumentGenerationRequest;
+import com.hiricus.dcs.dto.request.GroupCreationRequest;
 import com.hiricus.dcs.model.object.discipline.DisciplineObject;
 import com.hiricus.dcs.model.object.discipline.FinalGradeObject;
 import com.hiricus.dcs.model.object.document.DocumentObject;
 import com.hiricus.dcs.model.object.document.template.TemplateType;
 import com.hiricus.dcs.model.object.group.GroupObject;
+import com.hiricus.dcs.model.object.user.UserDataObject;
+import com.hiricus.dcs.model.object.user.UserObject;
 import com.hiricus.dcs.model.repository.*;
 import com.hiricus.dcs.security.request.UserAuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,17 @@ public class StartupRunner implements CommandLineRunner {
         FinalGradeObject norm = new FinalGradeObject("Пофиг", LocalDate.now(), 4, 0);
 
 //        templateController.generateDocumentFromTemplate(new DocumentGenerationRequest(TemplateType.RHAPSODY.name(), 1, "pdf"));
+
+//        List<UserDataObject> members = groupRepository.getGroupMembersInfo(1);
+//        for (UserDataObject member : members) {
+//            System.out.println(member.getSurname());
+//        }
+
+//        GroupCreationRequest request = new GroupCreationRequest("ПИ-211", 1, 3, 4, 2025);
+//        GroupObject group = new GroupObject(request);
+//        groupRepository.createEmptyGroupWithStaff(group);
+
+//        groupRepository.addGroupMembers()
 
 
 //        DocumentObject doc = documentRepository.findDocumentById(1L).get();

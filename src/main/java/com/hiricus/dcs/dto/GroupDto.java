@@ -2,10 +2,18 @@ package com.hiricus.dcs.dto;
 
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.model.object.user.UserDataObject;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class GroupDto {
     private Integer id;
     private String name;
@@ -15,7 +23,7 @@ public class GroupDto {
     private UserDto curator;
     private UserDto head;
 
-    private List<UserDto> includedUsers = new ArrayList<>();
+    private List<UserDataDto> includedUsers = new ArrayList<>();
 
     public GroupDto(GroupObject groupObject) {
         this.id = groupObject.getId();
@@ -30,7 +38,7 @@ public class GroupDto {
         List<UserDataObject> userDataObjects = groupObject.getMembers();
         if (userDataObjects != null) {
             for (UserDataObject userDataObject : userDataObjects) {
-                this.includedUsers.add(new UserDto(userDataObject));
+                this.includedUsers.add(new UserDataDto(userDataObject));
             }
         }
     }

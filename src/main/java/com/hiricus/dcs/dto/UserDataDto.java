@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 public class UserDataDto {
+    private Integer id;
     private String name;
     private String surname;
     private String patronymic;
@@ -23,6 +24,7 @@ public class UserDataDto {
     private String snils;
 
     public UserDataDto(UserDataObject userData) {
+        this.id = userData.getId();
         this.name = userData.getName();
         this.surname = userData.getSurname();
         this.patronymic = userData.getPatronymic();

@@ -56,10 +56,10 @@ public class SecurityConfig {
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(List.of("*")); // ✅ разрешить любой origin
-        configuration.setAllowedMethods(List.of("*"));         // ✅ разрешить любые методы (GET, POST и т.д.)
-        configuration.setAllowedHeaders(List.of("*"));         // ✅ разрешить любые заголовки
-        configuration.setAllowCredentials(false);              // ❗️если true — нельзя использовать "*"
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

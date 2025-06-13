@@ -2,11 +2,14 @@ package com.hiricus.dcs.service;
 
 import com.hiricus.dcs.exception.EntityNotFoundException;
 import com.hiricus.dcs.model.object.user.UserDataObject;
+import com.hiricus.dcs.model.object.user.UserObject;
 import com.hiricus.dcs.model.repository.UserDataRepository;
 import com.hiricus.dcs.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -23,6 +26,17 @@ public class UserService {
     public UserDataObject getUserData(int userId) {
         return userDataRepository.findUserDataByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
+    @Transactional
+    public UserObject getUser(String login) {
+        Optional<UserObject> user = userRepository.findUserByLogin(login);
+
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException("User with login " + login + " not found");
+        }
+
+        return user.get();
     }
 
     @Transactional

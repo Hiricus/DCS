@@ -17,6 +17,9 @@ public class DocumentDto {
     @JsonProperty("size_bytes")
     private Long sizeBytes;
 
+    @JsonProperty("mime_type")
+    private String mimeType;
+
     @JsonProperty("data")
     private String contendBase64;
 
@@ -30,5 +33,10 @@ public class DocumentDto {
         this.name = name;
         this.sizeBytes = sizeBytes;
         this.contendBase64 = Base64.getEncoder().encodeToString(data);
+    }
+
+    public DocumentDto(String name, Long sizeBytes, String mimeType, byte[] data) {
+        this(name, sizeBytes, data);
+        this.mimeType = mimeType;
     }
 }

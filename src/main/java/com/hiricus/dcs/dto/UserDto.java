@@ -27,4 +27,9 @@ public class UserDto {
         this.id = userObject.getId();
         this.login = userObject.getLogin();
     }
+
+    public UserDto(int id, String login) {
+        this.id = id;
+        this.login = login;
+    }
 }

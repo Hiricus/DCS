@@ -21,7 +21,7 @@ public class DocumentObject {
     private long sizeBytes;
 
     public DocumentObject(MultipartFile file) throws IOException {
-        this.fileName = file.getName();
+        this.fileName = file.getOriginalFilename();
         this.mimeType = file.getContentType();
         this.sizeBytes = file.getSize();
         this.data = file.getBytes();

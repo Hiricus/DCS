@@ -1,6 +1,7 @@
 package com.hiricus.dcs;
 
 import com.hiricus.dcs.model.repository.UserRepository;
+import com.hiricus.dcs.security.request.UserRegisterRequest;
 import com.hiricus.dcs.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -24,6 +25,9 @@ public class AddAdminUsersTask implements CommandLineRunner {
             log.info("Adding system users...");
             authService.addAdminUser("Hiricus", "2556145");
             authService.addAdminUser("admin", "admin");
+
+            // Не админы
+            authService.registerNewUser(new UserRegisterRequest("maksim", "her@yandex.sosu", "maksim"));
         }
     }
 }

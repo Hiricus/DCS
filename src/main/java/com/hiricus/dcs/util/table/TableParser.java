@@ -49,7 +49,7 @@ public class TableParser {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
                     return sdf.format(javaDate);
                 } else {
-                    return String.valueOf((int) cell.getNumericCellValue());
+                    return String.valueOf((long) cell.getNumericCellValue());
                 }
             case CellType.BOOLEAN: return String.valueOf(cell.getBooleanCellValue());
             case CellType.FORMULA: return cell.getCellFormula();

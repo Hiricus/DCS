@@ -59,9 +59,6 @@ public class AuthService {
         // Добавляется дефолтная роль
         roleRepository.addRoleToUser(userId.get(), roleContainer.getRoleId("ROLE_USER"));
 
-        // Добавляется пустая запись в user_data чтобы в будущем можно было добавить данные
-        userDataRepository.createUserData(new UserDataObject(userId.get()));
-
         return userId;
     }
 

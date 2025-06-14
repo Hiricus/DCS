@@ -1,15 +1,20 @@
 package com.hiricus.dcs.controller;
 
+import com.hiricus.dcs.dto.DocumentDto;
 import com.hiricus.dcs.dto.GroupDto;
 import com.hiricus.dcs.dto.request.GroupCreationRequest;
+import com.hiricus.dcs.model.object.document.DocumentObject;
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.security.data.CustomUserDetails;
 import com.hiricus.dcs.service.GroupService;
+import com.hiricus.dcs.service.XmlTableService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +23,12 @@ import java.util.Map;
 @RequestMapping("/api/v1/groups")
 public class GroupController {
     private final GroupService groupService;
+    private final XmlTableService tableService;
 
-    public GroupController(GroupService groupService) {
+    public GroupController(GroupService groupService,
+                           XmlTableService tableService) {
         this.groupService = groupService;
+        this.tableService = tableService;
     }
 
     @GetMapping("/all")
@@ -90,5 +98,26 @@ public class GroupController {
                                                   @RequestBody List<Integer> userIds) {
         groupService.removeUsersFromGroup(groupId, userIds);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // ----------------------- Работа с таблицами -----------------------
+    @PostMapping("tables/upload")
+    public ResponseEntity<?> addUsersAndGroupsFromTable(@RequestBody MultipartFile file, Authentication authentication) {
+        DocumentObject table;
+        try {
+            table = new DocumentObject(file);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Integer curatorId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+        tableService.handleGroupTable(table, curatorId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/tables/get/{group_id}")
+    public ResponseEntity<DocumentDto> getGroupInfoTable(@PathVariable("group_id") Integer groupId) {
+        DocumentObject table = tableService.getGroupInfoTable(groupId);
+        DocumentDto response = new DocumentDto(table);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

@@ -138,7 +138,7 @@ public class GroupService {
             }
         }
 
-        groupRepository.removeGroupMembers(groupId, userIds);
+        groupRepository.removeGroupMembersById(groupId, userIds);
     }
 
     // ЗАПУСКАТЬ В ТРАНЗАКЦИИ

@@ -5,7 +5,6 @@ import com.hiricus.dcs.model.object.user.UserDataObject;
 import com.hiricus.dcs.model.object.user.UserObject;
 import org.jooq.DSLContext;
 import org.jooq.InsertSetMoreStep;
-import org.jooq.Record;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -65,6 +64,15 @@ public class GroupRepository {
                 .set(STUDENT_GROUP.ENTRANCE_YEAR, group.getYear())
                 .set(STUDENT_GROUP.CURATOR_ID, group.getCurator().getId())
                 .set(STUDENT_GROUP.HEAD_ID, group.getHead().getId())
+                .returningResult(STUDENT_GROUP.ID)
+                .fetchOptional(STUDENT_GROUP.ID);
+    }
+
+    public Optional<Integer> createEmptyGroupWithoutStaff(GroupObject group) {
+        return jooq.insertInto(STUDENT_GROUP)
+                .set(STUDENT_GROUP.GROUP_NAME, group.getName())
+                .set(STUDENT_GROUP.COURSE, group.getCourse())
+                .set(STUDENT_GROUP.ENTRANCE_YEAR, group.getYear())
                 .returningResult(STUDENT_GROUP.ID)
                 .fetchOptional(STUDENT_GROUP.ID);
     }
@@ -170,10 +178,20 @@ public class GroupRepository {
                 .toList();
         return jooq.batch(queries).execute().length;
     }
+    public int addGroupMembersById(int groupId, List<Integer> memberIds) {
+        List<InsertSetMoreStep<UserGroupRelationRecord>> queries = memberIds.stream()
+                .map(memberId -> {
+                    return jooq.insertInto(USER_GROUP_RELATION)
+                            .set(USER_GROUP_RELATION.USER_ID, memberId)
+                            .set(USER_GROUP_RELATION.GROUP_ID, groupId);
+                })
+                .toList();
+        return jooq.batch(queries).execute().length;
+    }
 
     // TODO: Сделать чтобы удаляло только если пользователь в группе с переданным id
     // Пока работает только если у каждого студента одна группа
-    public int removeGroupMembers(int groupId, List<Integer> memberIds) {
+    public int removeGroupMembersById(int groupId, List<Integer> memberIds) {
         return jooq.deleteFrom(USER_GROUP_RELATION)
                 .where(USER_GROUP_RELATION.USER_ID.in(memberIds))
                 .execute();

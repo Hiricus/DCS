@@ -42,6 +42,9 @@ public class GroupObject {
         this.course = course;
         this.year = year;
     }
+    public GroupObject(String name) {
+        this.name = name;
+    }
     public GroupObject() {}
 
     public GroupObject(Record record) {

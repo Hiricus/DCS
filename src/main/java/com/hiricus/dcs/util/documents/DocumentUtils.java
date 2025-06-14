@@ -2,10 +2,11 @@ package com.hiricus.dcs.util.documents;
 
 import com.hiricus.dcs.model.object.document.DocumentObject;
 import com.hiricus.dcs.model.object.document.template.DocumentTemplateObject;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,6 +23,12 @@ public class DocumentUtils {
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(template.getTemplateData());
         return new XWPFDocument(inputStream);
+    }
+
+    public static Workbook loadXlsx(DocumentObject table) throws IOException {
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(table.getData())) {
+            return new XSSFWorkbook(inputStream);
+        }
     }
 
     public static void replacePlaceholders(XWPFDocument document, String placeholder, String replacement) {

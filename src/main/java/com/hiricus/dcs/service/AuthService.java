@@ -3,8 +3,10 @@ package com.hiricus.dcs.service;
 import com.hiricus.dcs.exception.EntityNotFoundException;
 import com.hiricus.dcs.exception.UserAlreadyExistsException;
 import com.hiricus.dcs.model.object.user.RoleObject;
+import com.hiricus.dcs.model.object.user.UserDataObject;
 import com.hiricus.dcs.model.object.user.UserObject;
 import com.hiricus.dcs.model.repository.RoleRepository;
+import com.hiricus.dcs.model.repository.UserDataRepository;
 import com.hiricus.dcs.model.repository.UserRepository;
 import com.hiricus.dcs.security.JwtUtil;
 import com.hiricus.dcs.security.request.UserRegisterRequest;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @Service
 public class AuthService {
     private final UserRepository userRepository;
+    private final UserDataRepository userDataRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final JwtUtil jwtUtil;
@@ -30,11 +33,13 @@ public class AuthService {
 
     @Autowired
     public AuthService(UserRepository userRepository,
+                       UserDataRepository userDataRepository,
                        RoleRepository roleRepository,
                        PasswordEncoder encoder,
                        JwtUtil jwtUtil,
                        RoleContainer roleContainer) {
         this.userRepository = userRepository;
+        this.userDataRepository = userDataRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtil = jwtUtil;
@@ -53,6 +58,9 @@ public class AuthService {
 
         // Добавляется дефолтная роль
         roleRepository.addRoleToUser(userId.get(), roleContainer.getRoleId("ROLE_USER"));
+
+        // Добавляется пустая запись в user_data чтобы в будущем можно было добавить данные
+        userDataRepository.createUserData(new UserDataObject(userId.get()));
 
         return userId;
     }

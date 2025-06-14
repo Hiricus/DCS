@@ -81,11 +81,12 @@ public class AddAdminUsersTask implements CommandLineRunner {
         Integer userId6 = userService.createUserData(data6);
 
 
-        // Создаём куратора и старост
+        // Создаём куратора
         UserRegisterRequest curatorRegistry = new UserRegisterRequest("Curator 228", "idk@mail.ru", "123");
         Integer curatorId = authService.registerNewUser(curatorRegistry).get();
         roleService.setCurator(curatorId);
 
+        // Назначаем роли старостам
         roleService.setHead(userId3);
         roleService.setHead(userId6);
 

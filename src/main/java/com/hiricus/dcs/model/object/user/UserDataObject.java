@@ -1,6 +1,7 @@
 package com.hiricus.dcs.model.object.user;
 
 import com.hiricus.dcs.dto.UserDataDto;
+import com.hiricus.dcs.util.table.GroupTableEntry;
 import lombok.ToString;
 import org.jooq.Record;
 
@@ -19,6 +20,16 @@ public class UserDataObject {
     private String passport;
     private String snils;
 
+    public UserDataObject(GroupTableEntry entry) {
+        this.id = entry.getId();
+        this.name = entry.getName();
+        this.surname = entry.getSurname();
+        this.patronymic = entry.getPatronymic();
+        this.birthDate = entry.getBirthDate();
+        this.phoneNumber = entry.getPhoneNumber();
+        this.passport = entry.getPassport();
+        this.snils = entry.getSnils();
+    }
     public UserDataObject(int id, UserDataDto dataDto) {
         this.id = id;
         this.name = dataDto.getName();

@@ -4,6 +4,7 @@ import com.hiricus.dcs.dto.GradeDto;
 import com.hiricus.dcs.exception.EntityNotFoundException;
 import com.hiricus.dcs.model.object.discipline.DisciplineObject;
 import com.hiricus.dcs.model.object.discipline.FinalGradeObject;
+import com.hiricus.dcs.model.object.document.DocumentObject;
 import com.hiricus.dcs.model.object.user.UserDataObject;
 import com.hiricus.dcs.model.object.user.UserObject;
 import com.hiricus.dcs.model.repository.*;

@@ -53,10 +53,13 @@ public class StartupRunner implements CommandLineRunner {
         FinalGradeObject tri = new FinalGradeObject("Толково", LocalDate.now(), 1, 3);
         FinalGradeObject norm = new FinalGradeObject("Пофиг", LocalDate.now(), 4, 0);
 
-        List<UserDataObject> userObjects = groupRepository.getGroupMembersInfo(5);
-        for (UserDataObject userObject : userObjects) {
-            System.out.println(userObject);
-        }
+//        List<UserDataObject> userObjects = groupRepository.getGroupMembersInfo(5);
+//        for (UserDataObject userObject : userObjects) {
+//            System.out.println(userObject);
+//        }
+
+//        DisciplineObject discipline = new DisciplineObject("Рурский");
+//        disciplineRepository.createEmptyDiscipline(discipline);
 
 //        templateController.generateDocumentFromTemplate(new DocumentGenerationRequest(TemplateType.RHAPSODY.name(), 1, "pdf"));
 

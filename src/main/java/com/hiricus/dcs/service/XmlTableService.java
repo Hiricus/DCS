@@ -1,26 +1,29 @@
 package com.hiricus.dcs.service;
 
-import com.hiricus.dcs.dto.DocumentDto;
 import com.hiricus.dcs.exception.EntityNotFoundException;
+import com.hiricus.dcs.model.object.discipline.DisciplineObject;
+import com.hiricus.dcs.model.object.discipline.FinalGradeObject;
 import com.hiricus.dcs.model.object.document.DocumentObject;
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.model.object.user.UserDataObject;
-import com.hiricus.dcs.model.object.user.UserObject;
+import com.hiricus.dcs.model.repository.DisciplineRepository;
+import com.hiricus.dcs.model.repository.GradeRepository;
 import com.hiricus.dcs.model.repository.GroupRepository;
-import com.hiricus.dcs.model.repository.UserDataRepository;
 import com.hiricus.dcs.model.repository.UserRepository;
 import com.hiricus.dcs.util.documents.DocumentUtils;
-import com.hiricus.dcs.util.table.GroupTableEntry;
-import com.hiricus.dcs.util.table.TableCreator;
+import com.hiricus.dcs.util.table.grade.GradeTableCreator;
+import com.hiricus.dcs.util.table.grade.GradeTableEntry;
+import com.hiricus.dcs.util.table.group.GroupTableEntry;
+import com.hiricus.dcs.util.table.group.GroupTableCreator;
 import com.hiricus.dcs.util.table.TableParser;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,24 +32,32 @@ import java.util.Optional;
 @Service
 public class XmlTableService {
     private final TableParser tableParser;
+    private final GroupTableCreator groupTableCreator;
+
+    private final GradeTableCreator gradeTableCreator;
+
     private final UserService userService;
     private final UserRepository userRepository;
-    private final UserDataRepository userDataRepository;
-    private final TableCreator tableCreator;
     private final GroupRepository groupRepository;
+    private final DisciplineRepository disciplineRepository;
+    private final GradeRepository gradeRepository;
 
     public XmlTableService(TableParser tableParser,
                            UserService userService,
                            UserRepository userRepository,
-                           UserDataRepository userDataRepository,
-                           TableCreator tableCreator,
-                           GroupRepository groupRepository) {
+                           GroupTableCreator groupTableCreator,
+                           GradeTableCreator gradeTableCreator,
+                           GroupRepository groupRepository,
+                           DisciplineRepository disciplineRepository,
+                           GradeRepository gradeRepository) {
         this.tableParser = tableParser;
         this.userService = userService;
         this.userRepository = userRepository;
-        this.userDataRepository = userDataRepository;
-        this.tableCreator = tableCreator;
+        this.groupTableCreator = groupTableCreator;
+        this.gradeTableCreator = gradeTableCreator;
         this.groupRepository = groupRepository;
+        this.disciplineRepository = disciplineRepository;
+        this.gradeRepository = gradeRepository;
     }
 
     @Transactional
@@ -82,7 +93,26 @@ public class XmlTableService {
             }
             loadDataFromGroupTable(entries, curatorId);
         } catch (IOException e) {
-            throw new RuntimeException("Cannot load table from document object");
+            throw new RuntimeException("Cannot load table from group table");
+        }
+    }
+
+    public void handleGradeTable(DocumentObject document) {
+        List<GradeTableEntry> entries;
+        try {
+            Workbook table = DocumentUtils.loadXlsx(document);
+            List<List<String>> parsed = tableParser.parseTable(table, 7);
+            entries = parsed.stream()
+                    .map(GradeTableEntry::new)
+                    .toList();
+
+            System.out.println("Parsed GRADE_TABLE entries: ");
+            for (GradeTableEntry entry : entries) {
+                System.out.println(entry);
+            }
+            loadDataFromGradeTable(entries);
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot load data from grade table");
         }
     }
 
@@ -100,7 +130,7 @@ public class XmlTableService {
                 .toList();
 
 
-        Workbook workbook = tableCreator.createGroupTable(entries);
+        Workbook workbook = groupTableCreator.createGroupTable(entries);
 
         // TODO: тестовый кусок, убрать
 //        try (FileOutputStream fos = new FileOutputStream("C:/Users/user/Desktop/Replacement_test/GROUP_TABLE_COLLECTED.xlsx")) {
@@ -121,6 +151,50 @@ public class XmlTableService {
         }
 
         return new DocumentObject(groupName + " info", ".xlsx", data);
+    }
+
+    @Transactional
+    public DocumentObject getFillingTemplateForGrades(Integer groupId, Integer disciplineId) {
+        // Проверка на существование
+        if (!groupRepository.isGroupExistsById(groupId)) {
+            throw new EntityNotFoundException("Group not found");
+        }
+        if (!disciplineRepository.isExistsById(disciplineId)) {
+            throw new EntityNotFoundException("Discipline not found");
+        }
+
+        // Собираем всех пользователей из группы и получаем название дисциплины
+        List<UserDataObject> groupMembers = groupRepository.getGroupMembersInfo(groupId);
+        String disciplineName = disciplineRepository.findDisciplineById(disciplineId).get().getName();
+
+        // Формируем объекты для записи в таблицу
+        List<GradeTableEntry> entries = groupMembers.stream()
+                .map(userData -> new GradeTableEntry(userData, disciplineName))
+                .toList();
+
+        // Создаём объект таблицы
+        Workbook workbook = gradeTableCreator.writeGradeTable(entries);
+
+//        // TODO: тестовый кусок, убрать
+//        try (FileOutputStream fos = new FileOutputStream("C:/Users/user/Desktop/Replacement_test/GRADE_TABLE_COLLECTED.xlsx")) {
+//            workbook.write(fos);
+//        } catch (Exception exception) {
+//            System.out.println("Какая то фигня во время записи таблицы в файл");
+//        }
+
+        // И записываем его в документ
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] data;
+        try {
+            workbook.write(bos);
+            data = bos.toByteArray();
+            workbook.close();
+            bos.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Какая то фигня во время записи файла в байты");
+        }
+
+        return new DocumentObject(disciplineName + " info", ".xlsx", data);
     }
 
     private void loadDataFromGroupTable(List<GroupTableEntry> entries, Integer curatorId) {
@@ -160,6 +234,26 @@ public class XmlTableService {
             // Добавляем пользователя в новую группу
             Integer groupId = affectedGroups.get(entry.getGroupName());
             groupRepository.addGroupMembersById(groupId, List.of(userId));
+        }
+    }
+
+    // Поддерживает аплоад только для одной дисциплины за раз
+    private void loadDataFromGradeTable(List<GradeTableEntry> entries) {
+        Optional<DisciplineObject> disciplineOptional = disciplineRepository.findDisciplineByName(entries.getFirst().getDisciplineName());
+        if (disciplineOptional.isEmpty()) {
+            throw new EntityNotFoundException("Discipline '" + entries.getFirst().getDisciplineName() + "' does not exist");
+        }
+
+        Integer disciplineId = disciplineOptional.get().getId();
+        for (GradeTableEntry entry : entries) {
+            // Проверка существования пользователя
+            if (entry.getUserId() == null || !userRepository.isUserExistsById(entry.getUserId())) {
+                throw new EntityNotFoundException("Student not found");
+            }
+
+            // Добавление оценки
+            FinalGradeObject grade = new FinalGradeObject(entry.getGrade(), LocalDate.now(), entry.getUserId(), disciplineId);
+            gradeRepository.createGrade(grade);
         }
     }
 }

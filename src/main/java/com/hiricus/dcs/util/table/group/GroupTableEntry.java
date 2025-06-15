@@ -1,4 +1,4 @@
-package com.hiricus.dcs.util.table;
+package com.hiricus.dcs.util.table.group;
 
 import com.hiricus.dcs.model.object.user.UserDataObject;
 import lombok.*;

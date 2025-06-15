@@ -1,7 +1,7 @@
 package com.hiricus.dcs.model.object.user;
 
 import com.hiricus.dcs.dto.UserDataDto;
-import com.hiricus.dcs.util.table.GroupTableEntry;
+import com.hiricus.dcs.util.table.group.GroupTableEntry;
 import lombok.ToString;
 import org.jooq.Record;
 

@@ -1,4 +1,4 @@
-package com.hiricus.dcs.util.table;
+package com.hiricus.dcs.util.table.group;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
-public class TableCreator {
+public class GroupTableCreator {
     public Workbook createGroupTable(List<GroupTableEntry> entries) {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Group Table");

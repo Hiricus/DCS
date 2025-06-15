@@ -32,23 +32,24 @@ public class DocumentTemplateRepository {
                 .fetchOptional(DocumentTemplateObject::new);
     }
 
-    public Optional<Integer> createTemplate(DocumentTemplateObject template) {
-        return jooq.insertInto(DOCUMENT_TEMPLATE)
-                .set(DOCUMENT_TEMPLATE.TEMPLATE_TYPE, template.getTemplateType().name())
-                .set(DOCUMENT_TEMPLATE.TEMPLATE_DATA, template.getTemplateData())
-                .set(DOCUMENT_TEMPLATE.MAPPINGS, template.getMappings().toString())
-                .returningResult(DOCUMENT_TEMPLATE.ID)
-                .fetchOptional(DOCUMENT_TEMPLATE.ID);
-    }
+    // TODO: переделать работу с маппингами
+//    public Optional<Integer> createTemplate(DocumentTemplateObject template) {
+//        return jooq.insertInto(DOCUMENT_TEMPLATE)
+//                .set(DOCUMENT_TEMPLATE.TEMPLATE_TYPE, template.getTemplateType().name())
+//                .set(DOCUMENT_TEMPLATE.TEMPLATE_DATA, template.getTemplateData())
+//                .set(DOCUMENT_TEMPLATE.MAPPINGS, template.getMappings().toString())
+//                .returningResult(DOCUMENT_TEMPLATE.ID)
+//                .fetchOptional(DOCUMENT_TEMPLATE.ID);
+//    }
 
-    public int updateTemplate(DocumentTemplateObject template) {
-        return jooq.update(DOCUMENT_TEMPLATE)
-                .set(DOCUMENT_TEMPLATE.TEMPLATE_TYPE, template.getTemplateType().name())
-                .set(DOCUMENT_TEMPLATE.TEMPLATE_DATA, template.getTemplateData())
-                .set(DOCUMENT_TEMPLATE.MAPPINGS, template.getMappings().toString())
-                .where(DOCUMENT_TEMPLATE.ID.eq(template.getId()))
-                .execute();
-    }
+//    public int updateTemplate(DocumentTemplateObject template) {
+//        return jooq.update(DOCUMENT_TEMPLATE)
+//                .set(DOCUMENT_TEMPLATE.TEMPLATE_TYPE, template.getTemplateType().name())
+//                .set(DOCUMENT_TEMPLATE.TEMPLATE_DATA, template.getTemplateData())
+//                .set(DOCUMENT_TEMPLATE.MAPPINGS, template.getMappings().toString())
+//                .where(DOCUMENT_TEMPLATE.ID.eq(template.getId()))
+//                .execute();
+//    }
 
     public int deleteTemplateById(int id) {
         return jooq.delete(DOCUMENT_TEMPLATE)

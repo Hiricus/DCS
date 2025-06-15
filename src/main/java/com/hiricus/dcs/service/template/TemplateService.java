@@ -53,10 +53,8 @@ public class TemplateService {
 //                filledTemplate.write(fos);
 //
 //                fos.close();
-//                filledTemplate.close();
 //            }
-
-
+            filledTemplate.close();
             return new DocumentDto("FilledTemplate.docx", 1L, templateData);
         } catch (IOException e) {
             throw new RuntimeException("Какая то фигня с заполнением темплейта в сервисном классе");

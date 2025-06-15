@@ -31,7 +31,7 @@ public class DocumentUtils {
         }
     }
 
-    public static void replacePlaceholders(XWPFDocument document, String placeholder, String replacement) {
+    public static void replaceKeywords(XWPFDocument document, String placeholder, String replacement) {
         for (XWPFParagraph paragraph : document.getParagraphs()) {
             replaceInParagraph(paragraph, placeholder, replacement);
         }

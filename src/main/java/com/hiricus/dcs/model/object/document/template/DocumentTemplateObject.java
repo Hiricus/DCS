@@ -4,6 +4,8 @@ import com.hiricus.dcs.util.documents.MappingParser;
 import lombok.ToString;
 import org.jooq.Record;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static com.hiricus.dcs.generated.public_.Tables.DOCUMENT_TEMPLATE;
@@ -13,7 +15,7 @@ public class DocumentTemplateObject {
     private int id;
     private TemplateType templateType;
     private byte[] templateData;
-    private Map<String, String> mappings;
+    private List<String> mappings;
 
     // constructors
     public DocumentTemplateObject(TemplateType templateType, byte[] templateData) {
@@ -30,7 +32,11 @@ public class DocumentTemplateObject {
         this.id = record.get(DOCUMENT_TEMPLATE.ID);
         this.templateType = TemplateType.valueOf(record.get(DOCUMENT_TEMPLATE.TEMPLATE_TYPE));
         this.templateData = record.get(DOCUMENT_TEMPLATE.TEMPLATE_DATA);
-        this.mappings = MappingParser.parseToMap(record.get(DOCUMENT_TEMPLATE.MAPPINGS));
+
+        String mappingString = record.get(DOCUMENT_TEMPLATE.MAPPINGS);
+        this.mappings = Arrays.stream(mappingString.split(";"))
+                .map(s -> "{" + s + "}")
+                .toList();
     }
 
     // getters
@@ -43,7 +49,7 @@ public class DocumentTemplateObject {
     public byte[] getTemplateData() {
         return templateData;
     }
-    public Map<String, String> getMappings() {
+    public List<String> getMappings() {
         return mappings;
     }
 
@@ -54,7 +60,7 @@ public class DocumentTemplateObject {
     public void setTemplateText(byte[] templateData) {
         this.templateData = templateData;
     }
-    public void setMappings(Map<String, String> mappings) {
+    public void setMappings(List<String> mappings) {
         this.mappings = mappings;
     }
 }

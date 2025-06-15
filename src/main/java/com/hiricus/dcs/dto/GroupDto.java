@@ -1,5 +1,6 @@
 package com.hiricus.dcs.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.model.object.user.UserDataObject;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,8 @@ public class GroupDto {
     private Integer id;
     private String name;
     private Integer course;
+
+    @JsonProperty("entrance_year")
     private Integer entranceYear;
 
     private UserDto curator;

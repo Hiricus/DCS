@@ -2,6 +2,7 @@ package com.hiricus.dcs.model.repository;
 
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.model.object.task.TaskObject;
+import com.hiricus.dcs.model.object.user.UserDataObject;
 import com.hiricus.dcs.model.object.user.UserObject;
 import org.jooq.DSLContext;
 import org.jooq.DeleteConditionStep;
@@ -37,11 +38,43 @@ public class TaskRepository {
                 .fetchOptional(TaskObject::new);
     }
 
-    public Optional<Integer> createEmptyTask(TaskObject task) {
+    public List<TaskObject> findAllByAuthorId(int authorId) {
+        return jooq.select(TASK.asterisk())
+                .from(TASK)
+                .where(TASK.TASK_AUTHOR_ID.eq(authorId))
+                .fetch(TaskObject::new);
+    }
+
+    public List<TaskObject> findAllCompletedByAuthorId(int authorId) {
+        return jooq.select(TASK.asterisk())
+                .from(TASK)
+                .where(TASK.TASK_AUTHOR_ID.eq(authorId))
+                .and(TASK.IS_COMPLETED.eq(true))
+                .fetch(TaskObject::new);
+    }
+
+    public List<TaskObject> findAllUncompletedByAuthorId(int authorId) {
+        return jooq.select(TASK.asterisk())
+                .from(TASK)
+                .where(TASK.TASK_AUTHOR_ID.eq(authorId))
+                .and(TASK.IS_COMPLETED.eq(false))
+                .fetch(TaskObject::new);
+    }
+
+    public List<TaskObject> findAllUncompletedByGroupId(int groupId) {
+        return jooq.select(TASK.asterisk())
+                .from(TASK)
+                .where(TASK.GROUP_ID.eq(groupId))
+                .and(TASK.IS_COMPLETED.eq(false))
+                .fetch(TaskObject::new);
+    }
+
+    public Optional<Integer> createTask(TaskObject task) {
         return jooq.insertInto(TASK)
                 .set(TASK.TASK_NAME, task.getName())
                 .set(TASK.TASK_TYPE, task.getType().name())
                 .set(TASK.HAS_DOCUMENTS, task.isHasDocuments())
+                .set(TASK.GROUP_ID, task.getRelatedGroupId())
                 .returningResult(TASK.ID)
                 .fetchOptional(TASK.ID);
     }
@@ -50,7 +83,7 @@ public class TaskRepository {
         return jooq.update(TASK)
                 .set(TASK.TASK_NAME, task.getName())
                 .set(TASK.TASK_TYPE, task.getType().name())
-                .set(TASK.HAS_DOCUMENTS, task.isHasDocuments())
+//                .set(TASK.HAS_DOCUMENTS, task.isHasDocuments())
                 .where(TASK.ID.eq(task.getId()))
                 .execute();
     }
@@ -65,6 +98,12 @@ public class TaskRepository {
         return findTaskById(id).isPresent();
     }
 
+    public void setCompleted(int id, boolean completed) {
+        jooq.update(TASK)
+                .set(TASK.IS_COMPLETED, completed)
+                .where(TASK.ID.eq(id))
+                .execute();
+    }
     // Work with author
     public Optional<UserObject> getTaskAuthor(int taskId) {
         return jooq.select(USERS.asterisk())
@@ -89,9 +128,9 @@ public class TaskRepository {
                 .fetchOptional(GroupObject::new);
     }
 
-    public int setRelatedGroup(int taskId, GroupObject group) {
+    public int setRelatedGroup(int taskId, int groupId) {
         return jooq.update(TASK)
-                .set(TASK.GROUP_ID, group.getId())
+                .set(TASK.GROUP_ID, groupId)
                 .where(TASK.ID.eq(taskId))
                 .execute();
     }
@@ -104,11 +143,18 @@ public class TaskRepository {
     }
 
     // Work with task subjects
-    public List<UserObject> getTaskSubjects(int taskId) {
-        return jooq.select(USERS.asterisk()).from(TASK_USER_RELATION)
-                .join(USERS).on(TASK_USER_RELATION.USER_ID.eq(USERS.ID))
+    public List<UserDataObject> getAllTaskSubjects(int taskId) {
+        return jooq.select(USER_DATA.asterisk()).from(TASK_USER_RELATION)
+                .join(USER_DATA).on(TASK_USER_RELATION.USER_ID.eq(USER_DATA.USER_ID))
                 .where(TASK_USER_RELATION.TASK_ID.eq(taskId))
-                .fetch(UserObject::new);
+                .fetch(UserDataObject::new);
+    }
+    public List<UserDataObject> getAllTaskSubjectsWithChecking(int taskId, boolean checkedStatus) {
+        return jooq.select(USER_DATA.asterisk()).from(TASK_USER_RELATION)
+                .join(USER_DATA).on(TASK_USER_RELATION.USER_ID.eq(USER_DATA.USER_ID))
+                .where(TASK_USER_RELATION.TASK_ID.eq(taskId))
+                .and(TASK_USER_RELATION.CHECKED.eq(checkedStatus))
+                .fetch(UserDataObject::new);
     }
 
     public int addTaskSubjects(int taskId, List<UserObject> users) {
@@ -122,19 +168,28 @@ public class TaskRepository {
         return jooq.batch(queries).execute().length;
     }
 
-    public int removeTaskSubject(int taskId, UserObject user) {
-        return jooq.delete(TASK_USER_RELATION)
+    // TODO: проверить что нормально работает т.к. я это сам писал
+    public int updateCheckedForTaskSubjects(int taskId, List<Integer> userIds, boolean checked) {
+        return jooq.update(TASK_USER_RELATION)
+                .set(TASK_USER_RELATION.CHECKED, checked)
                 .where(TASK_USER_RELATION.TASK_ID.eq(taskId))
-                .and(TASK_USER_RELATION.USER_ID.eq(user.getId()))
+                .and(TASK_USER_RELATION.USER_ID.in(userIds))
                 .execute();
     }
 
-    public int removeTaskSubjects(int taskId, List<UserObject> users) {
-        List<DeleteConditionStep<TaskUserRelationRecord>> queries = users.stream()
-                .map(user -> {
+    public int removeTaskSubject(int taskId, int userId) {
+        return jooq.delete(TASK_USER_RELATION)
+                .where(TASK_USER_RELATION.TASK_ID.eq(taskId))
+                .and(TASK_USER_RELATION.USER_ID.eq(userId))
+                .execute();
+    }
+
+    public int removeTaskSubjects(int taskId, List<Integer> usersIds) {
+        List<DeleteConditionStep<TaskUserRelationRecord>> queries = usersIds.stream()
+                .map(userId -> {
                     return jooq.delete(TASK_USER_RELATION)
                             .where(TASK_USER_RELATION.TASK_ID.eq(taskId))
-                            .and(TASK_USER_RELATION.USER_ID.eq(user.getId()));
+                            .and(TASK_USER_RELATION.USER_ID.eq(userId));
                 }).toList();
 
         return jooq.batch(queries).execute().length;

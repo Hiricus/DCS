@@ -1,5 +1,7 @@
 package com.hiricus.dcs.model.object.task;
 
 public enum TaskType {
-    GENERAL
+    GENERAL,
+    CHECKING,
+    DATA_COLLECTION
 }

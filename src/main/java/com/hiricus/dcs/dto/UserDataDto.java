@@ -1,5 +1,6 @@
 package com.hiricus.dcs.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hiricus.dcs.model.object.user.UserDataObject;
 import lombok.Getter;
@@ -16,6 +17,7 @@ public class UserDataDto {
     private String patronymic;
 
     @JsonProperty("birth_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     private LocalDateTime birthDate;
 
     @JsonProperty("phone_number")

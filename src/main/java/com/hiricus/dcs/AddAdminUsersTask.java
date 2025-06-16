@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -69,16 +70,28 @@ public class AddAdminUsersTask implements CommandLineRunner {
         UserDataObject data1 = new UserDataObject("Павел", "Свиридов", "Николаевич", LocalDateTime.now(), "+79781149146", "123456 7890", "idk lol");
         UserDataObject data2 = new UserDataObject("Максим", "Яровой", "Романович", LocalDateTime.now(), "+7978123441", "123456 7890", "idk lol");
         UserDataObject data3 = new UserDataObject(headId1, "Давид", "Пугач", "Сергеевич", LocalDateTime.now(), "+79781234432", "123456 7890", "idk lol");
-        UserDataObject data4 = new UserDataObject("Даниил", "Погонялов", "Дмитриевич", LocalDateTime.now(), "+79788667056", "123456 7890", "idk lol");
-        UserDataObject data5 = new UserDataObject("Андрей", "Саенко", "Алексеевич", LocalDateTime.now(), "+79787271488", "123456 7890", "idk lol");
-        UserDataObject data6 = new UserDataObject(headId2, "Баhleдун", "V", "Мужеложец", LocalDateTime.now(), "+88005553535", "123456 1337", "idk lol");
+//        UserDataObject data4 = new UserDataObject("Даниил", "Погонялов", "Дмитриевич", LocalDateTime.now(), "+79788667056", "123456 7890", "idk lol");
+//        UserDataObject data5 = new UserDataObject("Андрей", "Саенко", "Алексеевич", LocalDateTime.now(), "+79787271488", "123456 7890", "idk lol");
+        UserDataObject data6 = new UserDataObject(headId2, "Алёна", "Стойкова", "Сергеевна", LocalDateTime.now(), "+88005553535", "123456 1337", "idk lol");
 
         Integer userId1 = userService.createUserData(data1);
         Integer userId2 = userService.createUserData(data2);
         Integer userId3 = userService.createUserData(data3);
-        Integer userId4 = userService.createUserData(data4);
-        Integer userId5 = userService.createUserData(data5);
+//        Integer userId4 = userService.createUserData(data4);
+//        Integer userId5 = userService.createUserData(data5);
         Integer userId6 = userService.createUserData(data6);
+
+        // Создаём пользователей через методы
+        List<UserDataObject> groupOneMembers = createGroupOneMembers();
+        List<UserDataObject> groupTwoMembers = createGroupTwoMembers();
+        List<Integer> groupOneMembersIds = new ArrayList<>();
+        List<Integer> groupTwoMembersIds = new ArrayList<>();
+        for (UserDataObject groupOneMember : groupOneMembers) {
+            groupOneMembersIds.add(userService.createUserData(groupOneMember));
+        }
+        for (UserDataObject groupTwoMember : groupTwoMembers) {
+            groupTwoMembersIds.add(userService.createUserData(groupTwoMember));
+        }
 
 
         // Создаём куратора
@@ -99,6 +112,38 @@ public class AddAdminUsersTask implements CommandLineRunner {
 
         // Добавляем в группы пользователей
         groupService.addUsersToGroup(groupId1, List.of(userId1, userId2, userId3));
-        groupService.addUsersToGroup(groupId2, List.of(userId4, userId5, userId6));
+        groupService.addUsersToGroup(groupId2, List.of(userId6));
+        groupService.addUsersToGroup(groupId1, groupOneMembersIds);
+        groupService.addUsersToGroup(groupId2, groupTwoMembersIds);
+    }
+
+    private List<UserDataObject> createGroupOneMembers() {
+//        UserDataObject data = new UserDataObject("", "", "", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+
+        UserDataObject data1 = new UserDataObject("Кирилл", "Порозов", "Сергеевич", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data2 = new UserDataObject("Ирина", "Тимченко", "Владимировна", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data3 = new UserDataObject("Артур", "Степаненко", "Андреевич", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data4 = new UserDataObject("Евгений", "Жибер", "Алексеевич", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data5 = new UserDataObject("Михаил", "Шембелев", "Олегович", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data6 = new UserDataObject("Даниил", "Данилевский", "Леонидович", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data7 = new UserDataObject("Илья", "Бунин", "Александрович", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data8 = new UserDataObject("Вадим", "Карпенко", "Александрович", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data9 = new UserDataObject("Вероника", "Долгирева", "Сергеевна", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+
+        return List.of(data1, data2, data3, data4, data5, data6, data7, data8, data9);
+    }
+
+    private List<UserDataObject> createGroupTwoMembers() {
+        UserDataObject data1 = new UserDataObject("Оксана", "Пыленок", "Александровна", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data2 = new UserDataObject("Андрей", "Саенко", "Викторович", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data3 = new UserDataObject("Даниил", "Самойлов", "Ильич", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+//        UserDataObject data4 = new UserDataObject("Алёна", "Стойкова", "Сергеевна", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data5 = new UserDataObject("Екатерина", "Шарай", "Сергеевна", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data6 = new UserDataObject("Даниил", "Погонялов", "Дмитриевич", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data7 = new UserDataObject("Руслан", "Оруджев", "Камалович", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data8 = new UserDataObject("Фёдор", "Фёдор", "Павлович", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+        UserDataObject data9 = new UserDataObject("Никита", "Гасилин", "Витальевич", LocalDateTime.now(), "+79781234567", "123456 7890", "1234567890");
+
+        return List.of(data1, data2, data3, data5, data6, data7, data8, data9);
     }
 }

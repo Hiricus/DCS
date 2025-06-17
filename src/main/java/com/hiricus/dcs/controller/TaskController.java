@@ -1,9 +1,8 @@
-package com.hiricus.dcs;
+package com.hiricus.dcs.controller;
 
 import com.hiricus.dcs.dto.request.TaskCreationRequest;
 import com.hiricus.dcs.dto.task.TaskDto;
 import com.hiricus.dcs.dto.task.TaskSubjectDto;
-import com.hiricus.dcs.model.object.task.TaskObject;
 import com.hiricus.dcs.security.data.CustomUserDetails;
 import com.hiricus.dcs.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;

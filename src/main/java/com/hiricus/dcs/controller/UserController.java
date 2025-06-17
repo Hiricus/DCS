@@ -43,6 +43,15 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
+    // Создание записи с данными студента
+    @PostMapping("/data")
+    public ResponseEntity<Integer> createUserData(@RequestBody UserDataDto userData) {
+        UserDataObject dataObject = new UserDataObject(userData);
+        Integer response = userService.createUserData(dataObject);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
     // Изменение личных данных пользователя по id
     // TODO: сделать чтобы менялись только переданные поля
     @PatchMapping("/data/{id}")

@@ -35,7 +35,18 @@ public class UserDataObject {
         this.name = dataDto.getName();
         this.surname = dataDto.getSurname();
         this.patronymic = dataDto.getPatronymic();
-        this.birthDate = dataDto.getBirthDate().atStartOfDay();
+        this.birthDate = dataDto.getBirthDate() != null ?
+                dataDto.getBirthDate().atTime(12, 0) : null;
+        this.phoneNumber = dataDto.getPhoneNumber();
+        this.passport = dataDto.getPassport();
+        this.snils = dataDto.getSnils();
+    }
+    public UserDataObject(UserDataDto dataDto) {
+        this.name = dataDto.getName();
+        this.surname = dataDto.getSurname();
+        this.patronymic = dataDto.getPatronymic();
+        this.birthDate = dataDto.getBirthDate() != null ?
+                dataDto.getBirthDate().atTime(12, 0) : null;
         this.phoneNumber = dataDto.getPhoneNumber();
         this.passport = dataDto.getPassport();
         this.snils = dataDto.getSnils();

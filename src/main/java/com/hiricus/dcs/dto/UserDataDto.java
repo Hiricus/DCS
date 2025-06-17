@@ -6,6 +6,7 @@ import com.hiricus.dcs.model.object.user.UserDataObject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -18,7 +19,7 @@ public class UserDataDto {
 
     @JsonProperty("birth_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 
     @JsonProperty("phone_number")
     private String phoneNumber;
@@ -30,7 +31,7 @@ public class UserDataDto {
         this.name = userData.getName();
         this.surname = userData.getSurname();
         this.patronymic = userData.getPatronymic();
-        this.birthDate = userData.getBirthDate();
+        this.birthDate = userData.getBirthDate().toLocalDate();
         this.phoneNumber = userData.getPhoneNumber();
         this.passport = userData.getPassport();
         this.snils = userData.getSnils();

@@ -35,7 +35,7 @@ public class UserDataObject {
         this.name = dataDto.getName();
         this.surname = dataDto.getSurname();
         this.patronymic = dataDto.getPatronymic();
-        this.birthDate = dataDto.getBirthDate();
+        this.birthDate = dataDto.getBirthDate().atStartOfDay();
         this.phoneNumber = dataDto.getPhoneNumber();
         this.passport = dataDto.getPassport();
         this.snils = dataDto.getSnils();

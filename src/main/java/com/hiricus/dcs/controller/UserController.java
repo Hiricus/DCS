@@ -29,7 +29,7 @@ public class UserController {
 
     // Создание нового пользователя администратором
     @PostMapping
-    public ResponseEntity<?> createUser(UserRegisterRequest request) {
+    public ResponseEntity<Integer> createUser(UserRegisterRequest request) {
         Integer createdUserId = authService.registerNewUser(request).get();
         return new ResponseEntity<>(createdUserId, HttpStatus.CREATED);
     }

@@ -106,7 +106,7 @@ public class XmlTableService {
         List<GradeTableEntry> entries;
         try {
             Workbook table = DocumentUtils.loadXlsx(document);
-            List<List<String>> parsed = tableParser.parseTable(table, 7);
+            List<List<String>> parsed = tableParser.parseTable(table, 6);
             entries = parsed.stream()
                     .map(GradeTableEntry::new)
                     .toList();

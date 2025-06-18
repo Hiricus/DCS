@@ -18,7 +18,7 @@ public class GradeTableCreator {
         Sheet sheet = workbook.createSheet("Grades");
 
         // Создаём заголовки
-        String[] headers = {"оценка", "user_id", "фамилия", "имя", "отчество", "пасспорт", "название_дисциплины"};
+        String[] headers = {"оценка", "user_id", "фамилия", "имя", "отчество", "название_дисциплины"};
 
         // Создаём первую строку с заголовками
         Row headerRow = sheet.createRow(0);
@@ -37,8 +37,7 @@ public class GradeTableCreator {
             row.createCell(2).setCellValue(entry.getSurname());
             row.createCell(3).setCellValue(entry.getName());
             row.createCell(4).setCellValue(entry.getPatronymic());
-            row.createCell(5).setCellValue(entry.getPassport());
-            row.createCell(6).setCellValue(entry.getDisciplineName());
+            row.createCell(5).setCellValue(entry.getDisciplineName());
         }
 
         // Автоподгон ширины колонок

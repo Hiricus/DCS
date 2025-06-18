@@ -32,6 +32,14 @@ public class DocumentTemplateRepository {
                 .fetchOptional(DocumentTemplateObject::new);
     }
 
+    public Optional<Integer> createTemplate(TemplateType type, String mappings, byte[] data) {
+        return jooq.insertInto(DOCUMENT_TEMPLATE)
+                .set(DOCUMENT_TEMPLATE.TEMPLATE_TYPE, type.name())
+                .set(DOCUMENT_TEMPLATE.MAPPINGS, mappings)
+                .set(DOCUMENT_TEMPLATE.TEMPLATE_DATA, data)
+                .returningResult(DOCUMENT_TEMPLATE.ID)
+                .fetchOptional(DOCUMENT_TEMPLATE.ID);
+    }
     // TODO: переделать работу с маппингами
 //    public Optional<Integer> createTemplate(DocumentTemplateObject template) {
 //        return jooq.insertInto(DOCUMENT_TEMPLATE)

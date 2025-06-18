@@ -29,7 +29,7 @@ public class GradeTableEntry {
     }
 
     public GradeTableEntry(List<String> values) {
-        if (values.size() != 7) {
+        if (values.size() != 6) {
             throw new IllegalArgumentException("Cannot create GroupTableEntry from passed values: quantities don't match");
         }
 
@@ -38,7 +38,6 @@ public class GradeTableEntry {
         this.surname = values.get(2);
         this.name = values.get(3);
         this.patronymic = values.get(4);
-        this.passport = values.get(5);
-        this.disciplineName = values.get(6);
+        this.disciplineName = values.get(5);
     }
 }

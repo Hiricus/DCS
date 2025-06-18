@@ -60,4 +60,9 @@ public class TemplateService {
             throw new RuntimeException("Какая то фигня с заполнением темплейта в сервисном классе");
         }
     }
+
+    @Transactional
+    public Integer createTemplate(TemplateType type, String mappings, byte[] data) {
+        return templateRepository.createTemplate(type, mappings, data).get();
+    }
 }

@@ -10,6 +10,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,6 +37,17 @@ public class TemplateController {
         });
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/addNew")
+    public ResponseEntity<Integer> createNewTemplate(@RequestParam String type,
+                                                     @RequestParam String mappings,
+                                                     @RequestBody MultipartFile file) throws IOException {
+        TemplateType templateType = TemplateType.valueOf(type);
+        byte[] data = file.getBytes();
+
+        Integer response = templateService.createTemplate(templateType, mappings, data);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/generate")

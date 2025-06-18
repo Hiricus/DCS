@@ -4,6 +4,7 @@ public enum ReplacementKeyword {
     NAME,
     SURNAME,
     PATRONYMIC,
+    COURSE,
     FULL_NAME,
     SUBJECTS_GROUP,
     CURRENT_DATE,

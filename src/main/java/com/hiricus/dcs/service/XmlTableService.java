@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -38,9 +37,12 @@ public class XmlTableService {
 
     private final UserService userService;
     private final UserRepository userRepository;
+
     private final GroupRepository groupRepository;
     private final DisciplineRepository disciplineRepository;
+
     private final GradeRepository gradeRepository;
+    private final GradeService gradeService;
 
     public XmlTableService(TableParser tableParser,
                            UserService userService,
@@ -49,7 +51,8 @@ public class XmlTableService {
                            GradeTableCreator gradeTableCreator,
                            GroupRepository groupRepository,
                            DisciplineRepository disciplineRepository,
-                           GradeRepository gradeRepository) {
+                           GradeRepository gradeRepository,
+                           GradeService gradeService) {
         this.tableParser = tableParser;
         this.userService = userService;
         this.userRepository = userRepository;
@@ -58,6 +61,7 @@ public class XmlTableService {
         this.groupRepository = groupRepository;
         this.disciplineRepository = disciplineRepository;
         this.gradeRepository = gradeRepository;
+        this.gradeService = gradeService;
     }
 
     @Transactional
@@ -97,6 +101,7 @@ public class XmlTableService {
         }
     }
 
+    @Transactional
     public void handleGradeTable(DocumentObject document) {
         List<GradeTableEntry> entries;
         try {
@@ -151,6 +156,29 @@ public class XmlTableService {
         }
 
         return new DocumentObject(groupName + " info", ".xlsx", data);
+    }
+
+    @Transactional
+    public DocumentObject getPersonalGradeReport(Integer userId) {
+        if (!userRepository.isUserExistsById(userId)) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        List<FinalGradeObject> personalGrades = gradeService.getUsersGrades(userId);
+        Workbook workbook = gradeTableCreator.writePersonalGradeReport(personalGrades, userService.getUserFullName(userId));
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] data;
+        try {
+            workbook.write(bos);
+            data = bos.toByteArray();
+            bos.close();
+            workbook.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Какая то фигня во время записи файла в байты");
+        }
+
+        return new DocumentObject("Personal_grade_report", ".xlsx", data);
     }
 
     @Transactional

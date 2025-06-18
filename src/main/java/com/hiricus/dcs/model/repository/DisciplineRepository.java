@@ -91,6 +91,16 @@ public class DisciplineRepository {
         return jooq.batch(queries).execute().length;
     }
 
+    public int addDisciplinesToUser(int userId, List<Integer> disciplineIds) {
+        List<InsertSetMoreStep<UserDisciplineRelationRecord>> queries = disciplineIds.stream()
+                .map(disciplineId -> {
+                    return jooq.insertInto(USER_DISCIPLINE_RELATION)
+                            .set(USER_DISCIPLINE_RELATION.USER_ID, userId)
+                            .set(USER_DISCIPLINE_RELATION.DISCIPLINE_ID, disciplineId);
+                }).toList();
+        return jooq.batch(queries).execute().length;
+    }
+
     public int clearDiscipline(int id) {
         return jooq.delete(USER_DISCIPLINE_RELATION)
                 .where(USER_DISCIPLINE_RELATION.DISCIPLINE_ID.eq(id))

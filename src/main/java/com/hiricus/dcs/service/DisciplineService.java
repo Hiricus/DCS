@@ -64,6 +64,15 @@ public class DisciplineService {
         return userRepository.getUsersDisciplines(userId);
     }
 
+    // TODO: сделать проверку что все дисциплины существуют
+    @Transactional
+    public Integer addDisciplinesToUser(Integer userId, List<Integer> disciplineIds) {
+        if (!userRepository.isUserExistsById(userId)) {
+            throw new EntityNotFoundException("User not found");
+        }
+        return disciplineRepository.addDisciplinesToUser(userId, disciplineIds);
+    }
+
     @Transactional
     public Integer createDiscipline(String name) {
         if (disciplineRepository.isExistsByName(name)) {

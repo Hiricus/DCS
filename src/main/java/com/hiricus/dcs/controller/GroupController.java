@@ -104,7 +104,7 @@ public class GroupController {
     // ----------------------- Работа с таблицами -----------------------
     @PostMapping("tables/upload")
     @PreAuthorize("hasRole('CURATOR')")
-    public ResponseEntity<?> addUsersAndGroupsFromTable(@RequestBody MultipartFile file, Authentication authentication) {
+    public ResponseEntity<?> addUsersAndGroupsFromTable(@RequestParam("file") MultipartFile file, Authentication authentication) {
         DocumentObject table;
         try {
             table = new DocumentObject(file);

@@ -68,7 +68,7 @@ public class GradeController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadGradesOfDiscipline(@RequestBody MultipartFile file) {
+    public ResponseEntity<?> uploadGradesOfDiscipline(@RequestParam("file") MultipartFile file) {
         DocumentObject table;
         try {
             table = new DocumentObject(file);
@@ -78,5 +78,12 @@ public class GradeController {
 
         tableService.handleGradeTable(table);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/personalGradeReport/{id}")
+    public ResponseEntity<DocumentDto> getPersonalGradeReport(@PathVariable("id") Integer userId) {
+        DocumentObject table = tableService.getPersonalGradeReport(userId);
+
+        return new ResponseEntity<>(new DocumentDto(table), HttpStatus.OK);
     }
 }

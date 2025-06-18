@@ -1,9 +1,8 @@
-package com.hiricus.dcs;
+package com.hiricus.dcs.startup_tasks;
 
 import com.hiricus.dcs.dto.request.GroupCreationRequest;
 import com.hiricus.dcs.model.object.group.GroupObject;
 import com.hiricus.dcs.model.object.user.UserDataObject;
-import com.hiricus.dcs.model.object.user.UserObject;
 import com.hiricus.dcs.model.repository.UserRepository;
 import com.hiricus.dcs.security.request.UserRegisterRequest;
 import com.hiricus.dcs.service.AuthService;
@@ -12,6 +11,7 @@ import com.hiricus.dcs.service.RoleService;
 import com.hiricus.dcs.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +21,7 @@ import java.util.List;
 
 @Component
 @Slf4j
+@Order(1)
 public class AddAdminUsersTask implements CommandLineRunner {
     private final UserRepository userRepository;
 
@@ -94,10 +95,15 @@ public class AddAdminUsersTask implements CommandLineRunner {
         }
 
 
-        // Создаём куратора
+        // Создаём куратора с группами
         UserRegisterRequest curatorRegistry = new UserRegisterRequest("Curator 228", "idk@mail.ru", "123");
         Integer curatorId = authService.registerNewUser(curatorRegistry).get();
         roleService.setCurator(curatorId);
+
+        // Создаём куратора без групп
+        UserRegisterRequest curatorRegistry1 = new UserRegisterRequest("Curator 227", "sas@isos.sru", "123");
+        Integer curatorId1 = authService.registerNewUser(curatorRegistry1).get();
+        roleService.setCurator(curatorId1);
 
         // Назначаем роли старостам
         roleService.setHead(userId3);

@@ -40,6 +40,15 @@ public class UserDataRepository {
                 .fetchOptional(this::mapToUserDataObject);
     }
 
+    public Optional<UserDataObject> findUserDataByFullName(String surname, String name, String patronymic) {
+        return jooq.select(USER_DATA.asterisk())
+                .from(USER_DATA)
+                .where(USER_DATA.SURNAME.eq(surname))
+                .and(USER_DATA.NAME.eq(name))
+                .and(USER_DATA.PATRONYMIC.eq(patronymic))
+                .fetchOptional(this::mapToUserDataObject);
+    }
+
     public List<UserDataObject> findAll() {
         return jooq.select(USER_DATA.asterisk())
                 .from(USER_DATA)

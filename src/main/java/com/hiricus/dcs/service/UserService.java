@@ -29,6 +29,28 @@ public class UserService {
     }
 
     @Transactional
+    public UserDataObject getUserDataByFullName(String surname, String name, String patronymic) {
+        Optional<UserDataObject> optionalData = userDataRepository.findUserDataByFullName(surname, name, patronymic);
+
+        if (optionalData.isPresent()) {
+            return optionalData.get();
+        } else {
+            return null;
+        }
+    }
+
+    @Transactional
+    public String getUserFullName(Integer userId) {
+        Optional<UserDataObject> optionalData = userDataRepository.findUserDataByUserId(userId);
+        if (optionalData.isEmpty()) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        UserDataObject userData = optionalData.get();
+        return userData.getSurname() + " " + userData.getName() + " " + userData.getPatronymic();
+    }
+
+    @Transactional
     public Integer createUserData(UserDataObject userData) {
         // ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН ИЛИ НЕ ПЕРЕДАН ID СОЗДАЁТСЯ НОВЫЙ АККАУНТ-СТАБ
         if (userData.getId() == null || !(userRepository.isUserExistsById(userData.getId()))) {

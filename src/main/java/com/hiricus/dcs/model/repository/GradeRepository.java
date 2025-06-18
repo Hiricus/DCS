@@ -51,6 +51,13 @@ public class GradeRepository {
                 .fetchOptional(FINAL_GRADE.ID);
     }
 
+    public int updateGradeValue(Long gradeId, String updatedGrade) {
+        return jooq.update(FINAL_GRADE)
+                .set(FINAL_GRADE.GRADE, updatedGrade)
+                .where(FINAL_GRADE.ID.eq(gradeId))
+                .execute();
+    }
+
     public int updateGrade(FinalGradeObject grade) {
         return jooq.update(FINAL_GRADE)
                 .set(FINAL_GRADE.GRADE, grade.getGrade())

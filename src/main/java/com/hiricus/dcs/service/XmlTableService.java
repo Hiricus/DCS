@@ -182,6 +182,35 @@ public class XmlTableService {
     }
 
     @Transactional
+    public DocumentObject getGradeReportOnDiscipline(Integer disciplineId, Integer groupId) {
+        if (!disciplineRepository.isExistsById(disciplineId)) {
+            throw new EntityNotFoundException("Discipline not found");
+        }
+        if (!groupRepository.isGroupExistsById(groupId)) {
+            throw new EntityNotFoundException("Group not found");
+        }
+
+        List<FinalGradeObject> grades = gradeService.getGradesByGroupAndDiscipline(groupId, disciplineId);
+        String disciplineName = disciplineRepository.findDisciplineById(disciplineId).get().getName();
+        String groupName = groupRepository.findGroupById(groupId).get().getName();
+
+        Workbook workbook = gradeTableCreator.writeGradeReportOnDisciplineAndGroup(grades, disciplineName, groupName);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] data;
+        try {
+            workbook.write(bos);
+            data = bos.toByteArray();
+            bos.close();
+            workbook.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Какая то фигня во время записи файла в байты");
+        }
+
+        return new DocumentObject("Grade_report_on_group_and_discipline", ".xlsx", data);
+    }
+
+    @Transactional
     public DocumentObject getFillingTemplateForGrades(Integer groupId, Integer disciplineId) {
         // Проверка на существование
         if (!groupRepository.isGroupExistsById(groupId)) {

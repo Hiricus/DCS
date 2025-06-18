@@ -49,6 +49,44 @@ public class GradeTableCreator {
         return workbook;
     }
 
+    public Workbook writeGradeReportOnDisciplineAndGroup(List<FinalGradeObject> entries, String disciplineName, String groupName) {
+        Workbook workbook = new XSSFWorkbook();
+
+        Sheet sheet = workbook.createSheet("Отчёт об оценках по дисциплине");
+
+        // Создаём заголовки
+        String[] headers = {"Фио студента", "Оценка"};
+
+        // Создаём строку с названием дисциплины
+        Row nameRow = sheet.createRow(0);
+        Cell nameCell = nameRow.createCell(0);
+        nameCell.setCellValue("Итоговые оценки: " + disciplineName + " " + groupName);
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 1));
+
+        // Создаём строку с заголовками
+        Row headerRow = sheet.createRow(1);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+        }
+
+        // Заполняем строку данными
+        int rowNum = 2;
+        for (FinalGradeObject entry : entries) {
+            Row row = sheet.createRow(rowNum++);
+
+            row.createCell(0).setCellValue(entry.getUserName());
+            row.createCell(1).setCellValue(entry.getGrade());
+        }
+
+        // Автоподгон ширины колонок
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+        return workbook;
+    }
+
     public Workbook writePersonalGradeReport(List<FinalGradeObject> entries, String studentFullName) {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Персональный отчёт об оценках");

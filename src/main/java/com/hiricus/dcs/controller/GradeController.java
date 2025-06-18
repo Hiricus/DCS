@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,31 @@ public class GradeController {
         this.gradeService = gradeService;
     }
 
+    // ----------------------- Работа с таблицами -----------------------
+    @PostMapping
+    public ResponseEntity<Long> createGrade(@RequestBody Map<String, Object> request) {
+        String grade = (String) request.get("grade");
+        Integer userId = (Integer) request.get("user_id");
+        Integer disciplineId = (Integer) request.get("discipline_id");
+
+        FinalGradeObject gradeObject = new FinalGradeObject(grade, LocalDate.now(), userId, disciplineId);
+        Long id = gradeService.createGrade(gradeObject);
+        return new ResponseEntity<>(id, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateGrade(@PathVariable("id") Long gradeId, @RequestParam("new_grade") String updatedGrade) {
+        gradeService.updateGradeValue(gradeId, updatedGrade);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteGrade(@PathVariable("id") Long gradeId) {
+        gradeService.deleteGrade(gradeId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // ----------------------- Работа с большими объёмами данных -----------------------
     @GetMapping("/byUser/{userId}")
     public ResponseEntity<List<GradeDto>> getUsersGrades(@PathVariable("userId") Integer userId) {
         List<FinalGradeObject> grades = gradeService.getUsersGrades(userId);
@@ -84,6 +110,15 @@ public class GradeController {
     public ResponseEntity<DocumentDto> getPersonalGradeReport(@PathVariable("id") Integer userId) {
         DocumentObject table = tableService.getPersonalGradeReport(userId);
 
+        return new ResponseEntity<>(new DocumentDto(table), HttpStatus.OK);
+    }
+
+    @PostMapping("/gradeReportOnGroupAndDiscipline/get")
+    public ResponseEntity<DocumentDto> getGradeReportOnGroupAndDiscipline(@RequestBody Map<String, Object> request) {
+        Integer groupId = (int) request.get("group_id");
+        Integer disciplineId = (int) request.get("discipline_id");
+
+        DocumentObject table = tableService.getGradeReportOnDiscipline(disciplineId, groupId);
         return new ResponseEntity<>(new DocumentDto(table), HttpStatus.OK);
     }
 }
